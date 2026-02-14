@@ -7,11 +7,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import tn.esprit.entities.JeuEducatif;
 import tn.esprit.services.ServiceJeuEducatif;
-
 import tn.esprit.utils.Navigation;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SupprimerJeuController implements Initializable {
@@ -31,20 +31,8 @@ public class SupprimerJeuController implements Initializable {
     }
 
     @FXML
-    private void supprimer() throws SQLException {
-        JeuEducatif j = listeJeux.getSelectionModel().getSelectedItem();
-        if (j != null) {
-            service.supprimer(j.getId());
-            listeJeux.getItems().remove(j);
-        }
-    }
+    private void supprimer() {
 
-    @FXML
-    private void retour() {
-        Navigation.go("/listeJeux.fxml", listeJeux);
-    }
-    @FXML
-    private void supprimerJeu() {
         JeuEducatif selected = listeJeux.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
@@ -61,9 +49,12 @@ public class SupprimerJeuController implements Initializable {
         confirm.setHeaderText(null);
         confirm.setContentText("Voulez-vous supprimer ce jeu ?");
 
-        if (confirm.showAndWait().get() == ButtonType.OK) {
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 service.supprimer(selected.getId());
+                listeJeux.getItems().remove(selected);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Succès");
@@ -81,4 +72,8 @@ public class SupprimerJeuController implements Initializable {
         }
     }
 
+    @FXML
+    private void retour() {
+        Navigation.go("/listeJeux.fxml", listeJeux);
+    }
 }
