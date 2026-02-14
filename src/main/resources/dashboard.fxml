@@ -10,7 +10,7 @@
 
     <left>
         <VBox spacing="20" styleClass="sidebar">
-            <Label text="EDU MANAGER" styleClass="logo"/>
+            <Label text="AutiLearn" styleClass="logo"/>
 
             <Button text="🎮 Jeux éducatifs"
                     onAction="#openJeux"
