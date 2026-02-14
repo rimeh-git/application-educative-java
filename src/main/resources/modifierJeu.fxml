@@ -1,0 +1,61 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.TextArea?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.esprit.controllers.ModifierJeuController"
+           stylesheets="@style.css"
+           styleClass="soft-background"
+           pickOnBounds="false">
+
+    <VBox spacing="18"
+          alignment="CENTER"
+          styleClass="soft-card"
+          maxWidth="350">
+
+        <Label text="Modifier un jeu"
+               styleClass="soft-title"/>
+
+        <TextField fx:id="typeField"
+                   promptText="Type du jeu"
+                   styleClass="soft-field"/>
+
+        <ComboBox fx:id="niveauCombo"
+                  promptText="Choisir le niveau"
+                  styleClass="soft-combo"/>
+
+        <TextArea fx:id="descField"
+                  promptText="Description du jeu"
+                  prefHeight="80"
+                  styleClass="soft-field"/>
+
+        <TextField fx:id="imageField"
+                   promptText="Chemin de l'image"
+                   editable="false"
+                   styleClass="soft-field"/>
+
+        <Button text="Changer image"
+                onAction="#choisirImage"
+                styleClass="soft-btn-secondary"/>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button text="Modifier"
+                    onAction="#modifier"
+                    focusTraversable="false"
+                    styleClass="soft-btn-primary"/>
+
+            <Button text="Retour"
+                    onAction="#retour"
+                    focusTraversable="false"
+                    styleClass="soft-btn-cancel"/>
+        </HBox>
+
+    </VBox>
+
+</StackPane>
+

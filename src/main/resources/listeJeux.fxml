@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox spacing="20"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ListeJeuxController"
+      stylesheets="@style.css"
+      styleClass="main-container"
+      fillWidth="true">
+
+    <Label text="Gestion des Jeux Éducatifs"
+           styleClass="title"/>
+
+    <TextField fx:id="searchField"
+               promptText="🔍 Rechercher un jeu..."
+               styleClass="search-field"/>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="+ Ajouter"
+                onAction="#goToAjouter"
+                styleClass="btn-primary"/>
+    </HBox>
+
+    <Label fx:id="compteurLabel"
+           styleClass="counter-label"/>
+
+
+
+
+
+
+
+
+    <Pagination fx:id="pagination"
+                pageCount="1"
+                VBox.vgrow="ALWAYS"/>
+
+
+</VBox>

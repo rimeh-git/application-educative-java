@@ -1,0 +1,742 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f9;
+}
+
+/* SIDEBAR */
+.sidebar {
+    -fx-background-color: #1E3A5F;
+    -fx-padding: 40;
+    -fx-pref-width: 250;
+}
+
+.logo {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.btn-details {
+    -fx-background-color: #8e44ad;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+
+.menu-item {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.menu-item:hover {
+    -fx-text-fill: #00C6FF;
+}
+
+/* TITLE */
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E3A5F;
+}
+
+/* TEXTFIELD */
+.text-field {
+    -fx-pref-width: 300;
+    -fx-pref-height: 38;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #ced4da;
+}
+
+.text-field:focused {
+    -fx-border-color: #4A90E2;
+    -fx-border-width: 2;
+}
+
+/* BUTTON */
+.button {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #357ABD;
+}
+
+/* LISTVIEW */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+/* GAME CARD */
+.game-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 15, 0, 0, 6);
+    -fx-transition: all 0.3s;
+}
+
+.game-card:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+.game-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+}
+
+.game-card:hover {
+    -fx-background-color: #f1f3f5;
+}
+.hbox {
+    -fx-alignment: center-left;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E3A5F;
+}
+
+.combo-box {
+    -fx-pref-width: 160;
+}
+
+
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E3A5F;
+}
+
+.card-level {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4A90E2;
+}
+
+.card-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555;
+}
+
+.btn-edit {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-delete {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-edit:hover {
+    -fx-background-color: #357ABD;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #C0392B;
+}
+.menu-item {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-padding: 8 0 8 10;
+}
+
+.menu-item:hover {
+    -fx-text-fill: #00C6FF;
+}
+
+.menu-active {
+    -fx-text-fill: #00C6FF;
+    -fx-font-weight: bold;
+}
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f9;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: #1e3a5f;
+    -fx-padding: 30;
+}
+
+.logo {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #2c4d75;
+    -fx-background-radius: 8;
+}
+
+/* Title */
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* Add Button */
+.add-btn {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+}
+
+/* Search */
+.search-field {
+    -fx-background-radius: 20;
+    -fx-padding: 8;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.card-desc {
+    -fx-text-fill: #666;
+}
+
+.btn {
+    -fx-background-radius: 20;
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: white;
+}
+.sidebar {
+    -fx-background-color: #1f3a5f;
+    -fx-padding: 30;
+    -fx-pref-width: 220;
+}
+
+.logo {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.menu-btn:hover {
+    -fx-background-color: #2c4f7c;
+}
+
+.main-container {
+    -fx-padding: 40;
+}
+
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.search-field {
+    -fx-pref-width: 400;
+}
+
+.counter-label {
+    -fx-font-weight: bold;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-pref-width: 250;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2),10,0,0,4);
+}
+
+.card-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.badge-facile {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 5 10;
+    -fx-background-radius: 20;
+}
+
+.badge-moyen {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-padding: 5 10;
+    -fx-background-radius: 20;
+}
+
+.badge-difficile {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-padding: 5 10;
+    -fx-background-radius: 20;
+}
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-pref-width: 250;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15),10,0,0,4);
+    -fx-transition: all 0.3s;
+}
+
+.card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3),20,0,0,8);
+}
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-pref-width: 250;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15),10,0,0,4);
+    -fx-transition: all 0.3s;
+}
+
+.card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3),20,0,0,8);
+}
+.game-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,4);
+}
+
+.game-card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.badge {
+    -fx-padding: 5 10;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+}
+
+.badge-green { -fx-background-color: #4CAF50; }
+.badge-orange { -fx-background-color: #FF9800; }
+.badge-red { -fx-background-color: #F44336; }
+.game-card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10,0,0,3);
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.card-desc {
+    -fx-text-fill: #555;
+}
+
+.badge {
+    -fx-padding: 5 12;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+}
+
+.badge-green { -fx-background-color: #4CAF50; }
+.badge-orange { -fx-background-color: #FF9800; }
+.badge-red { -fx-background-color: #F44336; }
+
+.btn-edit {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+}
+
+.btn-delete {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: white;
+}
+.form-container {
+    -fx-background-color: #f4f6f9;
+    -fx-padding: 40;
+}
+
+.form-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.form-input {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 8 12;
+}
+
+.btn-primary {
+    -fx-background-color: #4e73df;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 15;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #2e59d9;
+}
+
+.btn-secondary {
+    -fx-background-color: #858796;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4e73df;
+}
+.scroll-pane {
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    -fx-background-color: white;
+    -fx-padding: 30;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 5);
+}
+
+/* ===== TITLE ===== */
+.form-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* ===== INPUT FIELDS ===== */
+.modern-field, .modern-area, .modern-combo {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1;
+    -fx-padding: 8 10;
+    -fx-background-color: #f9f9f9;
+}
+
+.modern-field:focused,
+.modern-area:focused,
+.modern-combo:focused {
+    -fx-border-color: #3498db;
+    -fx-background-color: white;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #2980b9;
+}
+
+.btn-secondary {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+/* Background gradient */
+.background {
+    -fx-background-color: linear-gradient(to bottom right, #dfe9f3, #ffffff);
+    -fx-padding: 50;
+    -fx-font-family: "Segoe UI";
+}
+
+/* Card */
+.form-card {
+    -fx-background-color: white;
+    -fx-padding: 35;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 25, 0, 0, 10);
+}
+
+/* Title */
+.form-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Inputs */
+.modern-field {
+    -fx-background-color: #f4f6f9;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: transparent;
+    -fx-padding: 10 15;
+    -fx-pref-width: 100%;
+}
+
+.modern-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #8e44ad;
+    -fx-border-width: 2;
+}
+
+/* Light Button */
+.btn-light {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 12;
+    -fx-padding: 8 20;
+}
+
+.btn-light:hover {
+    -fx-background-color: #dcdde1;
+}
+
+/* Gradient Button (comme l'image) */
+.btn-gradient {
+    -fx-background-color: linear-gradient(to right, #ff6ec4, #7873f5);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-padding: 10 30;
+    -fx-effect: dropshadow(gaussian, rgba(120,115,245,0.4), 15, 0, 0, 5);
+}
+
+.btn-gradient:hover {
+    -fx-opacity: 0.9;
+}
+
+/* Link */
+.btn-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8e44ad;
+}
+
+/* 🌫 Background */
+.soft-background {
+    -fx-background-color: #e8eaf3;
+}
+
+/* 🧊 Card */
+.soft-card {
+    -fx-background-color: #f0f2f7;
+    -fx-background-radius: 30;
+    -fx-padding: 35;
+    -fx-max-width: 350;
+
+    -fx-effect: dropshadow(gaussian, rgba(150,150,200,0.3), 25, 0.2, 8, 8);
+}
+
+/* 🏷 Title */
+.soft-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+
+/* 🧊 Inputs */
+.soft-field {
+    -fx-background-color: #f0f2f7;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #d6d8e0;
+    -fx-border-width: 1;
+    -fx-padding: 8;
+}
+
+.soft-field:focused {
+    -fx-border-color: #9b59b6;
+    -fx-border-width: 2;
+}
+
+/* Combo */
+.soft-combo {
+    -fx-background-color: linear-gradient(to right, #b06ab3, #4568dc);
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+
+/* Secondary button */
+.soft-btn-secondary {
+    -fx-background-color: #e6e8f2;
+    -fx-background-radius: 12;
+    -fx-padding: 6 20;
+    -fx-text-fill: #555;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.1, 2, 2);
+}
+
+/* Primary button */
+.soft-btn-primary {
+    -fx-background-color: linear-gradient(to right, #ff758c, #6a5af9);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 35;
+}
+
+.soft-btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #ff5f6d, #5b4fff);
+}
+.soft-btn-cancel {
+    -fx-background-color: #dcdde1;
+    -fx-text-fill: #555;
+    -fx-background-radius: 20;
+    -fx-padding: 8 25;
+}
+
+.soft-btn-cancel:hover {
+    -fx-background-color: #c8ccd6;
+}
+.soft-card {
+    -fx-background-color: white;
+    -fx-background-radius: 25;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #c1c1c1;
+    -fx-background-radius: 10;
+}
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.2, 0, 2);
+}
+.counter-label{
+-fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0.2, 0, 2);
+}
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: linear-gradient(to bottom right, #eef2ff, #e0e7ff);
+}
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #1e3a8a, #4f46e5);
+    -fx-padding: 30;
+    -fx-pref-width: 240;
+}
+
+.logo {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.25), 25, 0, 0, 8);
+    -fx-cursor: hand;
+        -fx-pref-width: 300;
+
+}
+
+.card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 8 20;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-opacity: 0.9;
+}
+.btn-danger {
+    -fx-background-color: linear-gradient(to right, #f43f5e, #ef4444);
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+}
+.badge {
+    -fx-background-radius: 20;
+    -fx-padding: 5 12;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}
+
+.badge-facile {
+    -fx-background-color: linear-gradient(to right, #10b981, #059669);
+}
+
+.badge-moyen {
+    -fx-background-color: linear-gradient(to right, #f59e0b, #d97706);
+}
+
+.badge-difficile {
+    -fx-background-color: linear-gradient(to right, #ef4444, #dc2626);
+}
+.game-card {
+    -fx-pref-width: 280;
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.DashboardController"
+            stylesheets="@style.css">
+
+    <!-- SIDEBAR FIXE -->
+    <left>
+        <VBox spacing="20" styleClass="sidebar">
+            <Label text="EDU MANAGER" styleClass="logo"/>
+
+            <Button text="🎮 Jeux éducatifs"
+                    onAction="#openJeux"
+                    styleClass="menu-btn"/>
+
+            <Button text="👤 Utilisateurs"
+                    styleClass="menu-btn"/>
+
+            <Button text="📊 Statistiques"
+                    styleClass="menu-btn"/>
+        </VBox>
+    </left>
+
+    <!-- SCROLL SUR TOUTE LA PAGE -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED">
+
+            <content>
+                <StackPane fx:id="contentArea"/>
+            </content>
+
+        </ScrollPane>
+    </center>
+
+</BorderPane>
+

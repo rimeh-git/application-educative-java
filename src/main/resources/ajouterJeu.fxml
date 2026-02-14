@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="tn.esprit.controllers.AjouterJeuController"
+           stylesheets="@style.css"
+           styleClass="soft-background">
+
+    <VBox spacing="18"
+          alignment="CENTER"
+          styleClass="soft-card">
+
+        <Label text="Ajouter un jeu"
+               styleClass="soft-title"/>
+
+        <TextField fx:id="typeField"
+                   promptText="Type du jeu"
+                   styleClass="soft-field"/>
+
+        <ComboBox fx:id="niveauCombo"
+                  promptText="Choisir le niveau"
+                  styleClass="soft-combo"/>
+
+        <TextArea fx:id="descField"
+                  promptText="Description du jeu"
+                  prefHeight="80"
+                  styleClass="soft-field"/>
+
+        <TextField fx:id="imageField"
+                   promptText="Chemin de l'image"
+                   editable="false"
+                   styleClass="soft-field"/>
+
+        <Button text="Choisir image"
+                onAction="#choisirImage"
+                styleClass="soft-btn-secondary"/>
+
+        <Button text="Ajouter"
+                onAction="#ajouter"
+                styleClass="soft-btn-primary"/>
+        <Button text="Retour"
+                onAction="#retour"
+                styleClass="soft-btn-cancel"/>
+    </VBox>
+
+</StackPane>
+
+

@@ -1,0 +1,14 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Button?>
+<VBox spacing="10" alignment="CENTER"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.SupprimerJeuController">
+
+    <Label text="Supprimer un jeu"/>
+    <ListView fx:id="listeJeux"/>
+    <Button text="Supprimer" onAction="#supprimer"/>
+    <Label text="← Retour" onMouseClicked="#retour"/>
+</VBox>
