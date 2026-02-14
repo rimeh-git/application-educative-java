@@ -44,7 +44,7 @@ public class Activite {
         this.typeActivite = typeActivite;
     }
 
-    // ✅ GETTERS
+
 
     public int getId() { return id; }
     public String getImageUrl() { return imageUrl; }
@@ -67,7 +67,7 @@ public class Activite {
         this.jeuId = jeuId;
     }
 
-    // ✅ SETTERS (IMPORTANT)
+
 
     public void setQuestion(String question) {
         this.question = question;

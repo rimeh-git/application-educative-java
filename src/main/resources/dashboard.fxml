@@ -2,12 +2,12 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.geometry.*?>
+
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.esprit.controllers.DashboardController"
             stylesheets="@style.css">
 
-    <!-- SIDEBAR FIXE -->
+
     <left>
         <VBox spacing="20" styleClass="sidebar">
             <Label text="EDU MANAGER" styleClass="logo"/>
@@ -24,7 +24,7 @@
         </VBox>
     </left>
 
-    <!-- SCROLL SUR TOUTE LA PAGE -->
+
     <center>
         <ScrollPane fitToWidth="true"
                     hbarPolicy="NEVER"

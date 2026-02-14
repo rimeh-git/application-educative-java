@@ -9,7 +9,7 @@
             fx:controller="tn.esprit.controllers.DetailsJeuController"
             style="-fx-background-color: #f5f6fa;">
 
-    <!-- IMAGE EN HAUT -->
+
     <top>
         <StackPane>
             <ImageView fx:id="imageView"
@@ -18,7 +18,7 @@
         </StackPane>
     </top>
 
-    <!-- CONTENU -->
+
     <center>
         <VBox spacing="20" style="-fx-padding: 30;">
 

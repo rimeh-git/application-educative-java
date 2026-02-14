@@ -13,7 +13,7 @@ import tn.esprit.entities.Activite;
 import tn.esprit.services.ServiceActivite;
 import java.util.List;
 
-import java.io.File;
+
 
 public class DetailsJeuController {
     private JeuEducatif jeu;
@@ -61,7 +61,7 @@ public class DetailsJeuController {
             stage.setTitle("Quiz");
             stage.show();
 
-            // ✅ Fermer la fenêtre DETAILS (la bonne)
+
             Stage currentStage = (Stage) typeLabel.getScene().getWindow();
             currentStage.close();
 

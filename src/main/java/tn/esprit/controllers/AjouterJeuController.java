@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.entities.JeuEducatif;
 import tn.esprit.services.ServiceJeuEducatif;
-import tn.esprit.utils.Navigation;
 
 import java.io.File;
 import java.net.URL;
@@ -45,33 +44,33 @@ public class AjouterJeuController implements Initializable {
 
         boolean valid = true;
 
-        // TYPE obligatoire
+
         if (type.isEmpty()) {
             markInvalid(typeField);
             valid = false;
         }
 
-        // TYPE lettres seulement
+
         if (!type.matches("[a-zA-Z ]+")) {
             markInvalid(typeField);
             showError("Le type doit contenir uniquement des lettres.");
             valid = false;
         }
 
-        // NIVEAU obligatoire
+
         if (niveau == null) {
             markInvalid(niveauCombo);
             valid = false;
         }
 
-        // DESCRIPTION obligatoire + min 5 caractères
+
         if (description.isEmpty() || description.length() < 5) {
             markInvalid(descField);
             showError("La description doit contenir au moins 5 caractères.");
             valid = false;
         }
 
-        // IMAGE obligatoire
+
         if (image.isEmpty()) {
             markInvalid(imageField);
             showError("Veuillez choisir une image.");
@@ -84,7 +83,7 @@ public class AjouterJeuController implements Initializable {
             service.ajouter(new JeuEducatif(type, niveau, description, image));
             showSuccess("Jeu ajouté avec succès !");
 
-// Fermer uniquement la fenêtre Ajouter
+
             Stage stage = (Stage) typeField.getScene().getWindow();
             stage.close();
 

@@ -12,7 +12,7 @@ import javafx.animation.Timeline;
 import javafx.util.Duration;
 import java.util.List;
 
-import javafx.animation.FadeTransition;
+
 
 
 public class JouerQuizController {

@@ -17,7 +17,7 @@ public class ServiceActivite {
         cnx = MyDataBase.getInstance().getConnection();
     }
 
-    // ✅ AJOUTER
+
     public void ajouter(Activite a) throws SQLException {
 
         String sql = "INSERT INTO activite (image_url, bonne_reponse, score, duree, resultat, jeu_id, question, type_activite) VALUES (?,?,?,?,?,?,?,?)";
@@ -35,7 +35,7 @@ public class ServiceActivite {
         ps.executeUpdate();
     }
 
-    // ✅ AFFICHER
+
     public List<Activite> afficher() throws SQLException {
 
         String sql = "SELECT * FROM activite";
@@ -62,7 +62,7 @@ public class ServiceActivite {
         return list;
     }
 
-    // ✅ TRI PAR SCORE
+
     public List<Activite> trierParScore() throws SQLException {
 
         return afficher().stream()
@@ -70,7 +70,7 @@ public class ServiceActivite {
                 .collect(Collectors.toList());
     }
 
-    // ✅ RECHERCHE PAR RESULTAT
+
     public List<Activite> rechercherParResultat(String resultat) throws SQLException {
 
         return afficher().stream()
@@ -78,7 +78,7 @@ public class ServiceActivite {
                 .collect(Collectors.toList());
     }
 
-    // ✅ RECUPERER PAR JEU ID
+
     public List<Activite> getByJeuId(int jeuId) throws SQLException {
 
         String sql = "SELECT * FROM activite WHERE jeu_id = ?";

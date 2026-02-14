@@ -4,8 +4,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -35,7 +34,7 @@ public class ModifierJeuController implements Initializable {
         niveauCombo.getItems().addAll("Facile", "Moyen", "Difficile");
     }
 
-    // ✅ UNE SEULE méthode setJeu
+
     public void setJeu(JeuEducatif jeu) {
         this.jeu = jeu;
 

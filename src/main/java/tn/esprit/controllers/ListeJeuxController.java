@@ -97,7 +97,7 @@ public class ListeJeuxController {
         card.setPrefWidth(280);
         card.setCursor(Cursor.HAND);
 
-        // IMAGE
+
         ImageView imageView = new ImageView();
         imageView.setFitWidth(260);
         imageView.setFitHeight(150);
@@ -110,19 +110,19 @@ public class ListeJeuxController {
             } catch (Exception ignored) {}
         }
 
-        // TITRE
+
         Label title = new Label("🎮 " +
                 (jeu.getType() != null ? jeu.getType() : "Sans nom"));
         title.getStyleClass().add("card-title");
 
-        // DESCRIPTION
+
         Label desc = new Label(
                 (jeu.getDescription() != null ?
                         jeu.getDescription() : "Pas de description"));
         desc.setWrapText(true);
         desc.getStyleClass().add("card-desc");
 
-        // BADGE
+
         Label badge = new Label(
                 jeu.getNiveau() != null ? jeu.getNiveau() : "Non défini");
         badge.getStyleClass().add("badge");
@@ -135,7 +135,7 @@ public class ListeJeuxController {
             }
         }
 
-        // BOUTONS
+
         Button btnDetails = new Button("📄 Détails");
         Button btnModifier = new Button("✏ Modifier");
         Button btnSupprimer = new Button("🗑 Supprimer");
@@ -144,7 +144,7 @@ public class ListeJeuxController {
         btnModifier.getStyleClass().add("btn-edit");
         btnSupprimer.getStyleClass().add("btn-delete");
 
-        // IMPORTANT : empêcher conflit avec clic carte
+
         btnDetails.setOnMouseClicked(e -> e.consume());
         btnModifier.setOnMouseClicked(e -> e.consume());
         btnSupprimer.setOnMouseClicked(e -> e.consume());
@@ -191,12 +191,8 @@ public class ListeJeuxController {
 
         card.getChildren().addAll(imageView, title, badge, desc, actions);
 
-        // CLIC SUR CARTE (optionnel)
-        card.setOnMouseClicked(event -> {
-            if (!(event.getTarget() instanceof Button)) {
-                ouvrirDetails(jeu);
-            }
-        });
+
+
 
         return card;
     }

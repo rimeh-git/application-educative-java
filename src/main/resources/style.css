@@ -3,7 +3,6 @@
     -fx-background-color: #f4f6f9;
 }
 
-/* SIDEBAR */
 .sidebar {
     -fx-background-color: #1E3A5F;
     -fx-padding: 40;
@@ -32,14 +31,12 @@
     -fx-text-fill: #00C6FF;
 }
 
-/* TITLE */
 .title-label {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #1E3A5F;
 }
 
-/* TEXTFIELD */
 .text-field {
     -fx-pref-width: 300;
     -fx-pref-height: 38;
@@ -53,7 +50,6 @@
     -fx-border-width: 2;
 }
 
-/* BUTTON */
 .button {
     -fx-background-color: #4A90E2;
     -fx-text-fill: white;
@@ -65,7 +61,6 @@
     -fx-background-color: #357ABD;
 }
 
-/* LISTVIEW */
 .list-view {
     -fx-background-color: transparent;
     -fx-padding: 10;
@@ -76,7 +71,6 @@
     -fx-padding: 10;
 }
 
-/* GAME CARD */
 .game-card {
     -fx-background-color: white;
     -fx-padding: 20;
@@ -170,7 +164,6 @@
     -fx-background-color: #f4f6f9;
 }
 
-/* Sidebar */
 .sidebar {
     -fx-background-color: #1e3a5f;
     -fx-padding: 30;
@@ -194,26 +187,22 @@
     -fx-background-radius: 8;
 }
 
-/* Title */
 .title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
 }
 
-/* Add Button */
 .add-btn {
     -fx-background-color: #4a90e2;
     -fx-text-fill: white;
     -fx-background-radius: 20;
 }
 
-/* Search */
 .search-field {
     -fx-background-radius: 20;
     -fx-padding: 8;
 }
 
-/* Cards */
 .card {
     -fx-background-color: white;
     -fx-background-radius: 15;
@@ -442,7 +431,6 @@
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
 }
-/* ===== FORM CONTAINER ===== */
 .form-container {
     -fx-background-color: white;
     -fx-padding: 30;
@@ -450,14 +438,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 5);
 }
 
-/* ===== TITLE ===== */
 .form-title {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
 }
 
-/* ===== INPUT FIELDS ===== */
 .modern-field, .modern-area, .modern-combo {
     -fx-background-radius: 10;
     -fx-border-radius: 10;
@@ -474,7 +460,6 @@
     -fx-background-color: white;
 }
 
-/* ===== BUTTONS ===== */
 .btn-primary {
     -fx-background-color: #3498db;
     -fx-text-fill: white;
@@ -498,14 +483,12 @@
     -fx-text-fill: white;
     -fx-background-radius: 8;
 }
-/* Background gradient */
 .background {
     -fx-background-color: linear-gradient(to bottom right, #dfe9f3, #ffffff);
     -fx-padding: 50;
     -fx-font-family: "Segoe UI";
 }
 
-/* Card */
 .form-card {
     -fx-background-color: white;
     -fx-padding: 35;
@@ -513,14 +496,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 25, 0, 0, 10);
 }
 
-/* Title */
 .form-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
 }
 
-/* Inputs */
 .modern-field {
     -fx-background-color: #f4f6f9;
     -fx-background-radius: 12;
@@ -536,7 +517,6 @@
     -fx-border-width: 2;
 }
 
-/* Light Button */
 .btn-light {
     -fx-background-color: #ecf0f1;
     -fx-background-radius: 12;
@@ -547,7 +527,6 @@
     -fx-background-color: #dcdde1;
 }
 
-/* Gradient Button (comme l'image) */
 .btn-gradient {
     -fx-background-color: linear-gradient(to right, #ff6ec4, #7873f5);
     -fx-text-fill: white;
@@ -561,18 +540,15 @@
     -fx-opacity: 0.9;
 }
 
-/* Link */
 .btn-link {
     -fx-background-color: transparent;
     -fx-text-fill: #8e44ad;
 }
 
-/* 🌫 Background */
 .soft-background {
     -fx-background-color: #e8eaf3;
 }
 
-/* 🧊 Card */
 .soft-card {
     -fx-background-color: #f0f2f7;
     -fx-background-radius: 30;
@@ -582,14 +558,12 @@
     -fx-effect: dropshadow(gaussian, rgba(150,150,200,0.3), 25, 0.2, 8, 8);
 }
 
-/* 🏷 Title */
 .soft-title {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #555;
 }
 
-/* 🧊 Inputs */
 .soft-field {
     -fx-background-color: #f0f2f7;
     -fx-background-radius: 10;
@@ -604,14 +578,12 @@
     -fx-border-width: 2;
 }
 
-/* Combo */
 .soft-combo {
     -fx-background-color: linear-gradient(to right, #b06ab3, #4568dc);
     -fx-text-fill: white;
     -fx-background-radius: 8;
 }
 
-/* Secondary button */
 .soft-btn-secondary {
     -fx-background-color: #e6e8f2;
     -fx-background-radius: 12;
@@ -621,7 +593,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.1, 2, 2);
 }
 
-/* Primary button */
 .soft-btn-primary {
     -fx-background-color: linear-gradient(to right, #ff758c, #6a5af9);
     -fx-text-fill: white;
