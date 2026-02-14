@@ -649,7 +649,7 @@
     -fx-background-color: linear-gradient(to bottom right, #eef2ff, #e0e7ff);
 }
 .sidebar {
-    -fx-background-color: linear-gradient(to bottom, #1e3a8a, #4f46e5);
+   -fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);
     -fx-padding: 30;
     -fx-pref-width: 240;
 }
