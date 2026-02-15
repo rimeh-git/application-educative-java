@@ -10,15 +10,31 @@
 
     <left>
         <VBox spacing="20" styleClass="sidebar">
-            <Label text="EDU MANAGER" styleClass="logo"/>
+            <Label text="AutiLearn" styleClass="logo"/>
+            <VBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  styleClass="dashboard-box">
 
-            <Button text="🎮 Jeux éducatifs"
-                    onAction="#openJeux"
-                    styleClass="menu-btn"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+
+                    <Label text="TABLEAU DE BORD"
+                           styleClass="dashboard-title"/>
+                </HBox>
+
+                <Region styleClass="dashboard-line"/>
+
+            </VBox>
+
+
+
+
+
 
             <Button text="👤 Utilisateurs"
                     styleClass="menu-btn"/>
-
+            <Button text="🎮 Jeux éducatifs"
+                    onAction="#openJeux"
+                    styleClass="menu-btn"/>
             <Button text="📊 Statistiques"
                     styleClass="menu-btn"/>
         </VBox>

@@ -649,16 +649,20 @@
     -fx-background-color: linear-gradient(to bottom right, #eef2ff, #e0e7ff);
 }
 .sidebar {
-    -fx-background-color: linear-gradient(to bottom, #1e3a8a, #4f46e5);
+
     -fx-padding: 30;
     -fx-pref-width: 240;
+    -fx-background-color: linear-gradient(to right, #6366f1, #8b5cf6);
+}
+.logo {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 40 0 30 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 2, 2);
 }
 
-.logo {
-    -fx-text-fill: white;
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-}
+
 .card {
     -fx-background-color: white;
     -fx-background-radius: 20;
@@ -711,3 +715,81 @@
 .game-card {
     -fx-pref-width: 280;
 }
+.main-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(to right, #6C63FF, #9C6BFF);
+}
+.menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+}
+
+.menu-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-background-radius: 10;
+}
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #6C63FF, #7B68EE);
+    -fx-padding: 20;
+}
+.sidebar-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 20 25;
+}
+.dashboard-menu-title {
+    -fx-text-fill: linear-gradient(to right, #ffffff, #e0e7ff);
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0.4, 0, 2);
+}
+.dashboard-container {
+    -fx-padding: 20 0 25 20;
+}
+
+.dashboard-small {
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-size: 12px;
+    -fx-letter-spacing: 2px;
+}
+
+.dashboard-big {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.3, 0, 2);
+}
+
+.dashboard-underline {
+    -fx-pref-height: 4;
+    -fx-pref-width: 80;
+    -fx-background-color: linear-gradient(to right, #ffffff, rgba(255,255,255,0.3));
+    -fx-background-radius: 10;
+}
+.dashboard-box {
+    -fx-padding: 25 0 25 20;
+}
+
+.dashboard-title {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+}
+
+.dashboard-icon {
+    -fx-font-size: 18px;
+}
+
+.dashboard-line {
+    -fx-pref-height: 3;
+    -fx-pref-width: 140;
+    -fx-background-color: linear-gradient(to right, white, rgba(255,255,255,0.3));
+    -fx-background-radius: 5;
+}
+

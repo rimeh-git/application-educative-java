@@ -15,7 +15,7 @@ public class MainFX extends Application {
 
         Scene scene = new Scene(loader.load(), 1200, 700);
 
-        stage.setTitle("EDU MANAGER");
+        stage.setTitle("AutiLearn");
         stage.setScene(scene);
         stage.show();
     }

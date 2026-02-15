@@ -12,11 +12,11 @@ public class Tentative {
 
     public Tentative() {}
 
-    public Tentative(int score, int duree, String resultat, int jeuId, int userId) {
+    public Tentative(int score, int duree, String resultat, int activiteId, int userId) {
         this.score = score;
         this.duree = duree;
         this.resultat = resultat;
-        this.jeuId = jeuId;
+        this.activiteId = activiteId;
         this.userId = userId;
     }
 

@@ -56,7 +56,6 @@ public class JouerQuizController {
         questionLabel.setText(a.getQuestion());
         reponseField.clear();
 
-        // Progression visuelle correcte
         progressBar.setProgress((double) index / questions.size());
     }
 
@@ -95,7 +94,7 @@ public class JouerQuizController {
                     scoreTotal,
                     0,
                     "Terminé",
-                    questions.get(0).getJeuId(), // ⚠️ plus logique que getId()
+                    questions.get(0).getId(),
                     1
             );
 
