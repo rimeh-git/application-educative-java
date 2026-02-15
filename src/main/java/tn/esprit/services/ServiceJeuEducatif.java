@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ServiceJeuEducatif {
+public class ServiceJeuEducatif implements IService<JeuEducatif> {
 
     private Connection cnx;
 
@@ -16,7 +16,7 @@ public class ServiceJeuEducatif {
         cnx = MyDataBase.getInstance().getConnection();
     }
 
-
+    @Override
     public void ajouter(JeuEducatif j) throws SQLException {
         String sql = "INSERT INTO jeu_educatif (type, niveau, description, image) VALUES (?,?,?,?)";
         PreparedStatement ps = cnx.prepareStatement(sql);
@@ -27,7 +27,7 @@ public class ServiceJeuEducatif {
         ps.executeUpdate();
     }
 
-
+    @Override
     public List<JeuEducatif> afficher() throws SQLException {
         List<JeuEducatif> list = new ArrayList<>();
         ResultSet rs = cnx.createStatement().executeQuery("SELECT * FROM jeu_educatif");
@@ -44,7 +44,7 @@ public class ServiceJeuEducatif {
         return list;
     }
 
-
+    @Override
     public void modifier(JeuEducatif j) throws SQLException {
         String sql = "UPDATE jeu_educatif SET type=?, niveau=?, description=?, image=? WHERE id=?";
         PreparedStatement ps = cnx.prepareStatement(sql);
@@ -56,7 +56,7 @@ public class ServiceJeuEducatif {
         ps.executeUpdate();
     }
 
-
+    @Override
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM jeu_educatif WHERE id=?";
         PreparedStatement ps = cnx.prepareStatement(sql);
@@ -64,14 +64,15 @@ public class ServiceJeuEducatif {
         ps.executeUpdate();
     }
 
+    // Méthodes supplémentaires (non obligatoires dans l'interface)
 
     public List<JeuEducatif> trierParType() throws SQLException {
         return afficher().stream()
                 .sorted(Comparator.comparing(JeuEducatif::getType))
                 .toList();
     }
-    public List<JeuEducatif> rechercherStream(String motCle) throws SQLException {
 
+    public List<JeuEducatif> rechercherStream(String motCle) throws SQLException {
         return afficher().stream()
                 .filter(j ->
                         (j.getType() != null &&
@@ -82,6 +83,4 @@ public class ServiceJeuEducatif {
                 )
                 .toList();
     }
-
-
 }
