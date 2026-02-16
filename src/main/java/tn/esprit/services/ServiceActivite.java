@@ -5,10 +5,9 @@ import tn.esprit.utils.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-public class ServiceActivite implements IService<Activite> {
+public class ServiceActivite {
 
     private Connection cnx;
 
@@ -16,29 +15,26 @@ public class ServiceActivite implements IService<Activite> {
         cnx = MyDataBase.getInstance().getConnection();
     }
 
-    @Override
+    // CREATE
     public void ajouter(Activite a) throws SQLException {
-        String sql = "INSERT INTO activite (image_url, bonne_reponse, score, duree, resultat, jeu_id, question, type_activite) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO activite (question, score, type_activite, jeu_id) VALUES (?,?,?,?)";
 
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setString(1, a.getImageUrl());
-        ps.setString(2, a.getBonneReponse());
-        ps.setInt(3, a.getScore());
-        ps.setInt(4, a.getDuree());
-        ps.setString(5, a.getResultat());
-        ps.setInt(6, a.getJeuId());
-        ps.setString(7, a.getQuestion());
-        ps.setString(8, a.getTypeActivite());
-
-        ps.executeUpdate();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, a.getQuestion());
+            ps.setInt(2, a.getScore());
+            ps.setString(3, a.getTypeActivite());
+            ps.setInt(4, a.getJeuId());
+            ps.executeUpdate();
+        }
     }
 
-    @Override
     public List<Activite> afficher() throws SQLException {
+
         List<Activite> list = new ArrayList<>();
         String sql = "SELECT * FROM activite";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
             list.add(new Activite(
@@ -57,53 +53,36 @@ public class ServiceActivite implements IService<Activite> {
         return list;
     }
 
-    @Override
+    // UPDATE
     public void modifier(Activite a) throws SQLException {
-        String sql = "UPDATE activite SET image_url=?, bonne_reponse=?, score=?, duree=?, resultat=?, jeu_id=?, question=?, type_activite=? WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
+        String sql = "UPDATE activite SET question=?, score=?, type_activite=?, jeu_id=? WHERE id=?";
 
-        ps.setString(1, a.getImageUrl());
-        ps.setString(2, a.getBonneReponse());
-        ps.setInt(3, a.getScore());
-        ps.setInt(4, a.getDuree());
-        ps.setString(5, a.getResultat());
-        ps.setInt(6, a.getJeuId());
-        ps.setString(7, a.getQuestion());
-        ps.setString(8, a.getTypeActivite());
-        ps.setInt(9, a.getId());
-
-        ps.executeUpdate();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, a.getQuestion());
+            ps.setInt(2, a.getScore());
+            ps.setString(3, a.getTypeActivite());
+            ps.setInt(4, a.getJeuId());
+            ps.setInt(5, a.getId());
+            ps.executeUpdate();
+        }
     }
 
-    @Override
+    // DELETE
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM activite WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
     }
-
-    // Méthodes supplémentaires
-
-    public List<Activite> trierParScore() throws SQLException {
-        return afficher().stream()
-                .sorted(Comparator.comparingInt(Activite::getScore).reversed())
-                .toList();
-    }
-
-    public List<Activite> rechercherParResultat(String resultat) throws SQLException {
-        return afficher().stream()
-                .filter(a -> a.getResultat().equalsIgnoreCase(resultat))
-                .toList();
-    }
-
     public List<Activite> getByJeuId(int jeuId) throws SQLException {
+        List<Activite> list = new ArrayList<>();
         String sql = "SELECT * FROM activite WHERE jeu_id = ?";
+
         PreparedStatement ps = cnx.prepareStatement(sql);
         ps.setInt(1, jeuId);
-
         ResultSet rs = ps.executeQuery();
-        List<Activite> list = new ArrayList<>();
 
         while (rs.next()) {
             list.add(new Activite(
@@ -121,4 +100,29 @@ public class ServiceActivite implements IService<Activite> {
 
         return list;
     }
+    // 🔹 TRI PAR SCORE
+    public List<Activite> trierParScore() throws SQLException {
+
+        List<Activite> list = afficher();
+        list.sort((a1, a2) -> Integer.compare(a2.getScore(), a1.getScore()));
+        return list;
+    }
+
+    // 🔹 RECHERCHE PAR RESULTAT
+    public List<Activite> rechercherParResultat(String resultat) throws SQLException {
+
+        List<Activite> list = afficher();
+        List<Activite> result = new ArrayList<>();
+
+        for (Activite a : list) {
+            if (a.getResultat() != null &&
+                    a.getResultat().equalsIgnoreCase(resultat)) {
+                result.add(a);
+            }
+        }
+
+        return result;
+    }
+
+
 }
