@@ -1,149 +1,112 @@
 package tn.esprit.controllers;
 
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import tn.esprit.entities.Activite;
 import tn.esprit.entities.JeuEducatif;
+import tn.esprit.services.ServiceActivite;
 import tn.esprit.services.ServiceJeuEducatif;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.sql.SQLException;
+import java.util.List;
 
-public class AjouterJeuController implements Initializable {
+public class AjouterActiviteController {
 
-    @FXML private TextField typeField;
-    @FXML private ComboBox<String> niveauCombo;
+    @FXML private TextField questionField;
+    @FXML private TextField scoreField;
 
-    @FXML private TextField imageField;
+    @FXML private ComboBox<JeuEducatif> jeuComboBox;
 
-    @FXML
-    private TextArea descField;
-
-    private final ServiceJeuEducatif service = new ServiceJeuEducatif();
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        niveauCombo.getItems().addAll("Facile", "Moyen", "Difficile");
-    }
-
+    private final ServiceActivite service = new ServiceActivite();
+    private final ServiceJeuEducatif serviceJeu = new ServiceJeuEducatif();
 
     @FXML
-    private void ajouter() {
-
-        resetStyles();
-
-        String type = typeField.getText().trim();
-        String niveau = niveauCombo.getValue();
-        String description = descField.getText().trim();
-        String image = imageField.getText().trim();
-
-        boolean valid = true;
-
-
-        if (type.isEmpty()) {
-            markInvalid(typeField);
-            valid = false;
-        }
-
-
-        if (!type.matches("[a-zA-Z ]+")) {
-            markInvalid(typeField);
-            showError("Le type doit contenir uniquement des lettres.");
-            valid = false;
-        }
-
-
-        if (niveau == null) {
-            markInvalid(niveauCombo);
-            valid = false;
-        }
-
-
-        if (description.isEmpty() || description.length() < 5) {
-            markInvalid(descField);
-            showError("La description doit contenir au moins 5 caractères.");
-            valid = false;
-        }
-
-
-        if (image.isEmpty()) {
-            markInvalid(imageField);
-            showError("Veuillez choisir une image.");
-            valid = false;
-        }
-
-        if (!valid) return;
+    public void initialize() {
 
         try {
-            service.ajouter(new JeuEducatif(type, niveau, description, image));
-            showSuccess("Jeu ajouté avec succès !");
+            List<JeuEducatif> jeux = serviceJeu.afficher();
+            jeuComboBox.getItems().addAll(jeux);
 
+            // Afficher le type du jeu dans la ComboBox
+            jeuComboBox.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(JeuEducatif item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getType());
+                }
+            });
 
-            Stage stage = (Stage) typeField.getScene().getWindow();
-            stage.close();
+            jeuComboBox.setButtonCell(new ListCell<>() {
+                @Override
+                protected void updateItem(JeuEducatif item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? "Choisir un jeu" : item.getType());
+                }
+            });
 
-
-        } catch (Exception e) {
-            showError(e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
-    private void choisirImage() {
-        FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(null);
+    private void ajouterActivite() {
 
-        if (file != null) {
-            imageField.setText(file.getAbsolutePath());
+        String question = questionField.getText().trim();
+        String scoreText = scoreField.getText().trim();
+        String type = "quiz";  // valeur automatique
+        JeuEducatif jeu = jeuComboBox.getValue();
+
+        if (question.isEmpty() || scoreText.isEmpty() || type.isEmpty() || jeu == null) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Tous les champs sont obligatoires !");
+            return;
+        }
+
+        int score;
+
+        try {
+            score = Integer.parseInt(scoreText);
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Score doit être un nombre !");
+            return;
+        }
+
+        if (score <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Score doit être positif !");
+            return;
+        }
+
+        try {
+
+            Activite a = new Activite(
+                    question,
+                    score,
+                    "Quiz",
+                    jeu.getId()  
+            );
+
+            service.ajouter(a);
+
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Activité ajoutée !");
+            fermer();
+
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur Base", e.getMessage());
         }
     }
 
+    private void showAlert(Alert.AlertType type, String titre, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(titre);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
-    private void retour() {
-        Stage stage = (Stage) typeField.getScene().getWindow();
+    private void fermer() {
+        Stage stage = (Stage) questionField.getScene().getWindow();
         stage.close();
-
-    }
-
-    private void markInvalid(Control field) {
-        field.setStyle("-fx-border-color: red; -fx-border-width: 2;");
-        shake(field);
-    }
-
-    private void resetStyles() {
-        typeField.setStyle(null);
-        niveauCombo.setStyle(null);
-        descField.setStyle(null);
-        imageField.setStyle(null);
-    }
-
-    private void shake(Control field) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(70), field);
-        tt.setFromX(0);
-        tt.setByX(10);
-        tt.setCycleCount(6);
-        tt.setAutoReverse(true);
-        tt.play();
-    }
-
-    private void showError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erreur");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
-
-    private void showSuccess(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Succès");
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.showAndWait();
     }
 }
