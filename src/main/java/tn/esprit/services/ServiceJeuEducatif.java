@@ -1,86 +1,128 @@
 package tn.esprit.services;
 
-import tn.esprit.entities.JeuEducatif;
+import tn.esprit.entities.Activite;
 import tn.esprit.utils.MyDataBase;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-public class ServiceJeuEducatif implements IService<JeuEducatif> {
+public class ServiceActivite {
 
     private Connection cnx;
 
-    public ServiceJeuEducatif() {
+    public ServiceActivite() {
         cnx = MyDataBase.getInstance().getConnection();
     }
 
-    @Override
-    public void ajouter(JeuEducatif j) throws SQLException {
-        String sql = "INSERT INTO jeu_educatif (type, niveau, description, image) VALUES (?,?,?,?)";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setString(1, j.getType());
-        ps.setString(2, j.getNiveau());
-        ps.setString(3, j.getDescription());
-        ps.setString(4, j.getImage());
-        ps.executeUpdate();
+    // CREATE
+    public void ajouter(Activite a) throws SQLException {
+        String sql = "INSERT INTO activite (question, score, type_activite, jeu_id) VALUES (?,?,?,?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, a.getQuestion());
+            ps.setInt(2, a.getScore());
+            ps.setString(3, a.getTypeActivite());
+            ps.setInt(4, a.getJeuId());
+            ps.executeUpdate();
+        }
     }
 
-    @Override
-    public List<JeuEducatif> afficher() throws SQLException {
-        List<JeuEducatif> list = new ArrayList<>();
-        ResultSet rs = cnx.createStatement().executeQuery("SELECT * FROM jeu_educatif");
+    public List<Activite> afficher() throws SQLException {
+
+        List<Activite> list = new ArrayList<>();
+        String sql = "SELECT * FROM activite";
+
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            list.add(new JeuEducatif(
+            list.add(new Activite(
                     rs.getInt("id"),
-                    rs.getString("type"),
-                    rs.getString("niveau"),
-                    rs.getString("description"),
-                    rs.getString("image")
+                    rs.getString("image_url"),
+                    rs.getString("bonne_reponse"),
+                    rs.getInt("score"),
+                    rs.getInt("duree"),
+                    rs.getString("resultat"),
+                    rs.getInt("jeu_id"),
+                    rs.getString("question"),
+                    rs.getString("type_activite")
             ));
         }
+
         return list;
     }
 
-    @Override
-    public void modifier(JeuEducatif j) throws SQLException {
-        String sql = "UPDATE jeu_educatif SET type=?, niveau=?, description=?, image=? WHERE id=?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setString(1, j.getType());
-        ps.setString(2, j.getNiveau());
-        ps.setString(3, j.getDescription());
-        ps.setString(4, j.getImage());
-        ps.setInt(5, j.getId());
-        ps.executeUpdate();
+    // UPDATE
+    public void modifier(Activite a) throws SQLException {
+        String sql = "UPDATE activite SET question=?, score=?, type_activite=?, jeu_id=? WHERE id=?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, a.getQuestion());
+            ps.setInt(2, a.getScore());
+            ps.setString(3, a.getTypeActivite());
+            ps.setInt(4, a.getJeuId());
+            ps.setInt(5, a.getId());
+            ps.executeUpdate();
+        }
     }
 
-    @Override
+    // DELETE
     public void supprimer(int id) throws SQLException {
-        String sql = "DELETE FROM jeu_educatif WHERE id=?";
+        String sql = "DELETE FROM activite WHERE id=?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+    public List<Activite> getByJeuId(int jeuId) throws SQLException {
+        List<Activite> list = new ArrayList<>();
+        String sql = "SELECT * FROM activite WHERE jeu_id = ?";
+
         PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
+        ps.setInt(1, jeuId);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            list.add(new Activite(
+                    rs.getInt("id"),
+                    rs.getString("image_url"),
+                    rs.getString("bonne_reponse"),
+                    rs.getInt("score"),
+                    rs.getInt("duree"),
+                    rs.getString("resultat"),
+                    rs.getInt("jeu_id"),
+                    rs.getString("question"),
+                    rs.getString("type_activite")
+            ));
+        }
+
+        return list;
+    }
+    // 🔹 TRI PAR SCORE
+    public List<Activite> trierParScore() throws SQLException {
+
+        List<Activite> list = afficher();
+        list.sort((a1, a2) -> Integer.compare(a2.getScore(), a1.getScore()));
+        return list;
     }
 
-    // Méthodes supplémentaires (non obligatoires dans l'interface)
+    // 🔹 RECHERCHE PAR RESULTAT
+    public List<Activite> rechercherParResultat(String resultat) throws SQLException {
 
-    public List<JeuEducatif> trierParType() throws SQLException {
-        return afficher().stream()
-                .sorted(Comparator.comparing(JeuEducatif::getType))
-                .toList();
+        List<Activite> list = afficher();
+        List<Activite> result = new ArrayList<>();
+
+        for (Activite a : list) {
+            if (a.getResultat() != null &&
+                    a.getResultat().equalsIgnoreCase(resultat)) {
+                result.add(a);
+            }
+        }
+
+        return result;
     }
 
-    public List<JeuEducatif> rechercherStream(String motCle) throws SQLException {
-        return afficher().stream()
-                .filter(j ->
-                        (j.getType() != null &&
-                                j.getType().toLowerCase().contains(motCle.toLowerCase()))
-                                ||
-                                (j.getDescription() != null &&
-                                        j.getDescription().toLowerCase().contains(motCle.toLowerCase()))
-                )
-                .toList();
-    }
+
 }
