@@ -4,6 +4,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -41,4 +42,19 @@ public class DashboardController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void openActivites() {
+        try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/gestionActivite.fxml"));
+            Parent root = loader.load();
+
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(root);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
