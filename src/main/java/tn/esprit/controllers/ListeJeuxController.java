@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListeJeuxController {
+    @FXML
+    private ComboBox<String> triComboBox;
 
     @FXML private TextField searchField;
     @FXML private Label compteurLabel;
@@ -37,15 +39,23 @@ public class ListeJeuxController {
             jeux = service.afficher();
             afficherJeux(jeux);
 
+            // 🔎 Recherche dynamique
             searchField.textProperty().addListener((obs, oldVal, newVal) -> {
                 List<JeuEducatif> filtered =
                         jeux.stream()
-                                .filter(j -> j.getType().toLowerCase()
-                                        .contains(newVal.toLowerCase()))
-                                .collect(Collectors.toList());
+                                .filter(j -> j.getType() != null &&
+                                        j.getType().toLowerCase()
+                                                .contains(newVal.toLowerCase()))
+                                .toList();
 
                 afficherJeux(filtered);
             });
+
+            triComboBox.getItems().addAll(
+                    "Titre A-Z",
+                    "Titre Z-A",
+                    "Niveau"
+            );
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,6 +142,8 @@ public class ListeJeuxController {
                 case "Moyen" -> badge.getStyleClass().add("badge-orange");
                 case "Difficile" -> badge.getStyleClass().add("badge-red");
             }
+
+
         }
 
 
@@ -235,4 +247,36 @@ public class ListeJeuxController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void changerTri() {
+
+        try {
+
+            String choix = triComboBox.getValue();
+            List<JeuEducatif> list;
+
+            if (choix == null) return;
+
+            switch (choix) {
+                case "Titre A-Z" ->
+                        list = service.trierParTypeASC();
+
+                case "Titre Z-A" ->
+                        list = service.trierParTypeDESC();
+
+                case "Niveau" ->
+                        list = service.trierParNiveau();
+
+                default ->
+                        list = service.afficher();
+            }
+
+            afficherJeux(list);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
