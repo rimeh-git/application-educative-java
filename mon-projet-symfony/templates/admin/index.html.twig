@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">🎯 Dashboard Administrateur</h2>
+
+    <a href="{{ path('admin_new') }}" class="btn btn-success">
+        ➕ Ajouter un jeu
+    </a>
+</div>
+
+    <div class="row">
+
+        {% for jeu in jeux %}
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow-lg border-0 rounded-4 p-3 h-100 hover-card">
+
+                {# 🖼 IMAGE #}
+                <img src="{{ asset('uploads/' ~ jeu.image) }}"
+                     class="card-img-top rounded-3 mb-3"
+                     style="height:180px; object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold text-capitalize">
+                        🎮 {{ jeu.type }}
+                    </h5>
+<p class="text-muted">{{ jeu.description }}</p>
+                    <p class="text-muted">
+                        Niveau : <strong>{{ jeu.niveau }}</strong>
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+
+                        <a href="{{ path('activite_list', {'id': jeu.id}) }}"
+                           class="btn btn-light btn-sm">
+                            📂 Activités
+                        </a>
+
+                       <a href="{{ path('admin_edit', {'id': jeu.id}) }}" class="btn btn-warning btn-sm">
+    ✏️ Modifier
+</a>
+
+                        <a href="{{ path('jeu_delete', {'id': jeu.id}) }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Supprimer ce jeu ?')">
+                            🗑 Supprimer
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

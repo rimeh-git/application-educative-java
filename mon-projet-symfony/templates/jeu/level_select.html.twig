@@ -1,0 +1,9 @@
+<h1>{{ jeu.type }} - Choisir niveau</h1>
+
+<div class="levels">
+    {% for i in 1..3 %}
+        <a href="{{ path('jeu_play', {id: jeu.id, niveau: i}) }}">
+            ⭐⭐⭐ Niveau {{ i }}
+        </a>
+    {% endfor %}
+</div>

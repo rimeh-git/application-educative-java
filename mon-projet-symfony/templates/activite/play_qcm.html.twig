@@ -1,0 +1,10 @@
+<h2>QCM</h2>
+
+{% for a in jeu.activites %}
+    <p>{{ a.question }}</p>
+
+    <button>{{ a.choix1 }}</button>
+    <button>{{ a.choix2 }}</button>
+    <button>{{ a.choix3 }}</button>
+    <button>{{ a.choix4 }}</button>
+{% endfor %}

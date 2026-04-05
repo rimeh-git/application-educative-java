@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container mt-5 text-center">
+
+    <h2 class="mb-4">🟢 Complète la phrase</h2>
+
+    <h4 class="mb-5">{{ activite.question }}</h4>
+
+    <form method="post">
+
+        <div class="d-grid gap-3 col-6 mx-auto">
+
+            <button name="reponse" value="{{ activite.choix1 }}" class="btn btn-outline-primary">
+                {{ activite.choix1 }}
+            </button>
+
+            <button name="reponse" value="{{ activite.choix2 }}" class="btn btn-outline-primary">
+                {{ activite.choix2 }}
+            </button>
+
+            <button name="reponse" value="{{ activite.choix3 }}" class="btn btn-outline-primary">
+                {{ activite.choix3 }}
+            </button>
+
+            <button name="reponse" value="{{ activite.choix4 }}" class="btn btn-outline-primary">
+                {{ activite.choix4 }}
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

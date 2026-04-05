@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>🔍 Trouve l'intrus</h1>
+
+{% if activite is defined %}
+
+<div style="display:grid; grid-template-columns: repeat(2,150px); gap:20px;">
+
+    <img src="/uploads/{{ activite.image1 }}" onclick="check(1)" style="cursor:pointer">
+    <img src="/uploads/{{ activite.image2 }}" onclick="check(2)" style="cursor:pointer">
+    <img src="/uploads/{{ activite.image3 }}" onclick="check(3)" style="cursor:pointer">
+    <img src="/uploads/{{ activite.image4 }}" onclick="check(4)" style="cursor:pointer">
+
+</div>
+
+<script>
+function check(choice) {
+    let correct = {{ activite.bonneReponse }};
+
+    if(choice == correct){
+        alert("✅ Bravo !");
+        setTimeout(() => {
+            window.location.href = "/jeu/play/{{ activite.jeu.id }}/niveau/{{ niveau + 1 }}";
+        }, 1000);
+    } else {
+        alert("❌ Mauvais !");
+    }
+    function goToNextLevel(jeuId, niveau) {
+    let next = niveau + 1;
+
+    fetch("/jeu/play/" + jeuId + "/niveau/" + next)
+    .then(res => {
+        if (res.ok) {
+            window.location.href = "/jeu/play/" + jeuId + "/niveau/" + next;
+        } else {
+            alert("🎉 Bravo ! Tu as terminé tous les niveaux !");
+            window.location.href = "/jeu/play/" + jeuId;
+        }
+    });
+}
+}
+</script>
+
+{% else %}
+
+<p style="color:red;">❌ Aucune activité trouvée</p>
+
+{% endif %}
+
+{% endblock %}

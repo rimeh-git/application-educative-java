@@ -1,0 +1,130 @@
+{% set niveau_num =
+    niveau == 'facile' ? 1 :
+    niveau == 'moyen' ? 2 :
+    3
+%}
+<h2>🧩 Puzzle - Niveau {{ niveau }}</h2>
+
+<img id="sourceImage"
+     src="{{ asset('uploads/' ~ activites.image) }}"
+     style="display:none;">
+
+{% set level =
+    niveau == 'facile' ? 2 :
+    niveau == 'moyen' ? 3 :
+    4
+%}
+
+<div id="puzzle"
+     style="
+        display:grid;
+        grid-template-columns: repeat({{ level }}, 80px);
+        gap:5px;
+        margin-top:20px;
+     ">
+</div>
+
+<p id="result"></p>
+
+<script>
+let SIZE = {{ level }};
+let pieces = [];
+let selected = null;
+
+const img = document.getElementById("sourceImage");
+
+if (img.complete) {
+    createPuzzle();
+} else {
+    img.onload = () => createPuzzle();
+}
+
+function createPuzzle() {
+    pieces = [];
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const w = img.width / SIZE;
+    const h = img.height / SIZE;
+
+    for (let y = 0; y < SIZE; y++) {
+        for (let x = 0; x < SIZE; x++) {
+
+            canvas.width = w;
+            canvas.height = h;
+
+            ctx.drawImage(img, x*w, y*h, w, h, 0, 0, w, h);
+
+            const piece = document.createElement("img");
+
+            piece.src = canvas.toDataURL();
+            piece.style.width = "80px";
+            piece.style.height = "80px";
+            piece.style.cursor = "pointer";
+
+            piece.dataset.index = y * SIZE + x;
+
+            piece.onclick = () => handleClick(piece);
+
+            pieces.push(piece);
+        }
+    }
+
+    shuffle(pieces);
+    render();
+}
+
+function render() {
+    const container = document.getElementById("puzzle");
+    container.innerHTML = "";
+    pieces.forEach(p => container.appendChild(p));
+}
+
+function handleClick(piece) {
+    if (!selected) {
+        selected = piece;
+        piece.style.border = "3px solid red";
+    } else {
+        let i1 = pieces.indexOf(selected);
+        let i2 = pieces.indexOf(piece);
+
+        [pieces[i1], pieces[i2]] = [pieces[i2], pieces[i1]];
+
+        selected.style.border = "";
+        selected = null;
+
+        render();
+        checkWin();
+    }
+}
+
+function checkWin() {
+    for (let i = 0; i < pieces.length; i++) {
+        if (parseInt(pieces[i].dataset.index) !== i) return;
+    }
+
+    document.getElementById("result").innerText = "🎉 Bravo !";
+
+    let next = {{ niveau }} + 1;
+
+    setTimeout(() => {
+        fetch("/jeu/play/{{ jeu.id }}/niveau/" + next)
+        .then(res => {
+            if (res.ok) {
+                window.location.href = "/jeu/play/{{ jeu.id }}/niveau/" + next;
+            } else {
+                alert("🎉 Tous les niveaux terminés !");
+                window.location.href = "/jeu/play/{{ jeu.id }}";
+            }
+        });
+    }, 1000);
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+</script>

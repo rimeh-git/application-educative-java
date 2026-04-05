@@ -1,0 +1,13 @@
+<h1>🎮 Nos Jeux</h1>
+
+<div class="row">
+{% for jeu in jeux %}
+    <div>
+        <h3>{{ jeu.type }}</h3>
+        <p>{{ jeu.niveau }}</p>
+
+        <a href="{{ path('jeu_details', {id: jeu.id}) }}">Détails</a>
+<a href="{{ path('play_game', {id: jeu.id}) }}">Jouer</a>
+    </div>
+{% endfor %}
+</div>

@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container py-4">
+
+    <h2 class="fw-bold text-center mb-4">🎮 Jeux Éducatifs</h2>
+
+    <!-- 🔍 Recherche auto -->
+    <form method="get" id="searchForm">
+
+    <input type="text" name="search" value="{{ search }}" onkeyup="autoSubmit()">
+
+    <select name="direction" onchange="autoSubmit()">
+        <option value="">Trier</option>
+        <option value="az" {{ direction == 'az' ? 'selected' }}>A → Z</option>
+        <option value="za" {{ direction == 'za' ? 'selected' }}>Z → A</option>
+    </select>
+
+</form>
+
+    <!-- 🎮 Jeux -->
+    <div class="row g-4">
+        {% for jeu in pagination %}
+        <div class="col-md-3">
+
+            <div class="card game-card shadow-sm h-100">
+
+                <img src="{{ asset('uploads/' ~ jeu.image) }}" 
+                     class="card-img-top p-3"
+                     style="height: 180px; object-fit: contain;">
+
+                <div class="card-body text-center">
+
+                    <h5 class="fw-bold text-capitalize">{{ jeu.type }}</h5>
+
+                    <!-- 🆕 Niveau -->
+                    <p class="text-muted mb-1">
+                        🎯 Niveau : <strong>{{ jeu.niveau }}</strong>
+                    </p>
+
+                    <!-- 🆕 Description -->
+                    <p class="small text-secondary">
+                        {{ jeu.description|default('Pas de description')|slice(0, 60) }}...
+                    </p>
+
+                    <a href="{{ path('play_one_game', {'id': jeu.id}) }}" 
+                       class="btn btn-primary w-100">
+                        🎮 Jouer
+                    </a>
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 📄 Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+
+</div>
+
+<!-- ⚡ JS recherche auto -->
+<script>
+function autoSubmit() {
+    clearTimeout(window.timer);
+    window.timer = setTimeout(() => {
+        document.getElementById('searchForm').submit();
+    }, 500);
+}
+</script>
+
+<!-- 🎨 Style -->
+<style>
+.game-card {
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.game-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+    transition: 0.3s;
+}
+
+.game-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+</style>
+
+{% endblock %}

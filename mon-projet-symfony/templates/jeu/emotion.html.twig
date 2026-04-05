@@ -1,0 +1,56 @@
+<h2>😊 Jeu Emotion - Niveau {{ niveau|default('') }}</h2>
+
+{% if activites is defined %}
+
+    {% for a in activites %}
+        <div>
+            <img src="{{ asset('uploads/' ~ a.image) }}" width="150">
+
+            <button onclick="check('{{ a.bonneReponse }}','joie', {{ a.jeu.id }}, {{ niveau }})">Joie</button>
+            <button onclick="check('{{ a.bonneReponse }}','tristesse', {{ a.jeu.id }}, {{ niveau }})">Tristesse</button>
+            <button onclick="check('{{ a.bonneReponse }}','colere', {{ a.jeu.id }}, {{ niveau }})">Colère</button>
+        </div>
+    {% endfor %}
+
+{% elseif activite is defined %}
+
+    <div>
+        <img src="{{ asset('uploads/' ~ activite.image) }}" width="150">
+
+        <button onclick="check('{{ activite.bonneReponse }}','joie', {{ activite.jeu.id }}, {{ niveau|default(1) }})">Joie</button>
+        <button onclick="check('{{ activite.bonneReponse }}','tristesse', {{ activite.jeu.id }}, {{ niveau|default(1) }})">Tristesse</button>
+        <button onclick="check('{{ activite.bonneReponse }}','colere', {{ activite.jeu.id }}, {{ niveau|default(1) }})">Colère</button>
+    </div>
+
+{% else %}
+
+    <p style="color:red;">❌ Aucune donnée envoyée</p>
+
+{% endif %}
+
+<script>
+function check(correct, choice, jeuId, niveau){
+
+    if(correct === choice){
+        alert("✅ Bravo !");
+        setTimeout(() => {
+            window.location.href = "/jeu/play/" + jeuId + "/niveau/" + (niveau + 1);
+        }, 1000);
+    }else{
+        alert("❌ Faux !");
+    }
+    function goToNextLevel(jeuId, niveau) {
+    let next = niveau + 1;
+
+    fetch("/jeu/play/" + jeuId + "/niveau/" + next)
+    .then(res => {
+        if (res.ok) {
+            window.location.href = "/jeu/play/" + jeuId + "/niveau/" + next;
+        } else {
+            alert("🎉 Bravo ! Tu as terminé tous les niveaux !");
+            window.location.href = "/jeu/play/" + jeuId;
+        }
+    });
+}
+}
+</script>

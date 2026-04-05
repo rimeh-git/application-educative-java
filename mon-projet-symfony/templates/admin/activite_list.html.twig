@@ -1,0 +1,30 @@
+<h2>Activités du jeu : {{ jeu.type }}</h2>
+
+<a href="/admin/activite/new/{{ jeu.id }}">➕ Ajouter activité</a>
+
+{% for a in activites %}
+    <div style="margin-bottom:20px;">
+
+        <p><b>{{ a.nom }}</b> (Niveau {{ a.niveau }})</p>
+
+        <!-- 🔥 IMAGE -->
+        {% if a.image %}
+            <img src="{{ asset('uploads/' ~ a.image) }}" width="120">
+        {% endif %}
+
+        <br><br>
+
+        <!-- 🔥 ACTIONS -->
+        <a href="/admin/activite/edit/{{ a.id }}">✏️ Modifier</a>
+        <a href="/admin/activite/delete/{{ a.id }}">🗑️ Supprimer</a>
+
+        <!-- 🔥 BOUTON JOUER -->
+        <a href="/jeu/play/{{ a.id }}/niveau/{{ a.niveau }}"
+           style="margin-left:10px; color:green;">
+           🎮 Jouer
+        </a>
+
+    </div>
+{% else %}
+    <p>Aucune activité</p>
+{% endfor %}

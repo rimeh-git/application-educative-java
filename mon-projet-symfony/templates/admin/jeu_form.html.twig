@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-4">
+
+<h2>➕ Ajouter un Jeu</h2>
+
+<form method="post">
+
+    <input type="text" name="type" class="form-control mb-2" placeholder="Type (Quiz, Puzzle...)">
+
+    <select name="niveau" class="form-control mb-2">
+        <option>Facile</option>
+        <option>Moyen</option>
+        <option>Difficile</option>
+    </select>
+
+    <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
+
+    <input type="text" name="image" class="form-control mb-2" placeholder="URL Image">
+
+    <button class="btn btn-success">Ajouter</button>
+
+</form>
+
+</div>
+{% endblock %}

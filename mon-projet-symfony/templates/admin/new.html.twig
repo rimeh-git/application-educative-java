@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5" style="max-width:600px;">
+
+    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+        <h3 class="mb-4 text-center">
+            {% if jeu is defined %}
+                ✏️ Modifier le jeu
+            {% else %}
+                ➕ Ajouter un jeu
+            {% endif %}
+        </h3>
+
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+        <!-- TYPE -->
+        <div class="mb-3">
+            {{ form_label(form.type) }}
+            {{ form_widget(form.type) }}
+            <div class="text-danger small">
+                {{ form_errors(form.type) }}
+            </div>
+        </div>
+
+        <!-- NIVEAU -->
+        <div class="mb-3">
+            {{ form_label(form.niveau) }}
+            {{ form_widget(form.niveau) }}
+            <div class="text-danger small">
+                {{ form_errors(form.niveau) }}
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="mb-3">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            <div class="text-danger small">
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <!-- IMAGE -->
+        <div class="mb-3">
+            {{ form_label(form.imageFile) }}
+            {{ form_widget(form.imageFile) }}
+        </div>
+
+        <!-- BOUTON -->
+        <div class="d-grid">
+            <button class="btn btn-success">
+                {% if jeu is defined %}
+                    💾 Modifier
+                {% else %}
+                    ➕ Ajouter
+                {% endif %}
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+
+    </div>
+</div>
+{% endblock %}

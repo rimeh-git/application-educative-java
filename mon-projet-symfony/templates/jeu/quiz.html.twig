@@ -1,0 +1,54 @@
+<h1>🧠 Quiz - Niveau {{ niveau }}</h1>
+
+<div style="max-width:600px; margin:auto;">
+
+    {% for q in activites %}
+
+        <div style="border:1px solid #ccc; padding:20px; margin-bottom:20px; border-radius:10px;">
+
+            <h3>{{ q.question }}</h3>
+
+            <button onclick="check(this, '{{ q.bonneReponse }}', {{ niveau }}, {{ app.request.get('id') }})">{{ q.choix1 }}</button><br><br>
+            <button onclick="check(this, '{{ q.bonneReponse }}', {{ niveau }}, {{ app.request.get('id') }})">{{ q.choix2 }}</button><br><br>
+            <button onclick="check(this, '{{ q.bonneReponse }}', {{ niveau }}, {{ app.request.get('id') }})">{{ q.choix3 }}</button><br><br>
+            <button onclick="check(this, '{{ q.bonneReponse }}', {{ niveau }}, {{ app.request.get('id') }})">{{ q.choix4 }}</button>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+<script>
+function check(btn, bonne, niveau, jeuId) {
+
+    if (btn.innerText === bonne) {
+
+        btn.style.background = 'green';
+
+        // ✅ sauvegarder progression
+        fetch('/save-progress/' + jeuId + '/' + niveau);
+
+        // 🔥 redirection vers niveau suivant
+        setTimeout(() => {
+            window.location.href = '/jeu/play/' + jeuId + '/niveau/' + (niveau + 1);
+        }, 1000);
+
+    } else {
+        btn.style.background = 'red';
+    }
+    function goToNextLevel(jeuId, niveau) {
+    let next = niveau + 1;
+
+    fetch("/jeu/play/" + jeuId + "/niveau/" + next)
+    .then(res => {
+        if (res.ok) {
+            window.location.href = "/jeu/play/" + jeuId + "/niveau/" + next;
+        } else {
+            alert("🎉 Bravo ! Tu as terminé tous les niveaux !");
+            window.location.href = "/jeu/play/" + jeuId;
+        }
+    });
+}
+}
+</script>

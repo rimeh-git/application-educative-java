@@ -1,0 +1,31 @@
+<h1>{{ jeu.type }} - Choisir niveau</h1>
+
+{% set niveaux = [] %}
+{% set progress = app.session.get('progress_' ~ jeu.id, []) %}
+
+<div style="display:flex; gap:20px; justify-content:center; margin-top:30px;">
+
+{% for a in jeu.activites %}
+
+    {% if a.niveau and a.niveau not in niveaux %}
+
+        {% set niveaux = niveaux|merge([a.niveau]) %}
+
+        {% set unlocked = (a.niveau == 1) or ((a.niveau - 1) in progress) %}
+
+        {% if unlocked %}
+            <a href="{{ path('jeu_play', {id: jeu.id, niveau: a.niveau}) }}"
+               style="padding:15px; background:#4CAF50; color:white; border-radius:10px;">
+                ⭐ Niveau {{ a.niveau }}
+            </a>
+        {% else %}
+            <span style="padding:15px; background:gray; color:white; border-radius:10px;">
+                🔒 Niveau {{ a.niveau }}
+            </span>
+        {% endif %}
+
+    {% endif %}
+
+{% endfor %}
+
+</div>

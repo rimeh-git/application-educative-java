@@ -1,0 +1,8 @@
+<h2>Trouver l'intrus</h2>
+
+{% for a in jeu.activites %}
+    <img src="/uploads/{{ a.img1 }}" width="100">
+    <img src="/uploads/{{ a.img2 }}" width="100">
+    <img src="/uploads/{{ a.img3 }}" width="100">
+    <img src="/uploads/{{ a.img4 }}" width="100">
+{% endfor %}

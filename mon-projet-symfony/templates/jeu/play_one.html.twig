@@ -1,0 +1,18 @@
+{% set type = jeu.type|lower %}
+{% set niveau = jeu.niveau %}  {# ✅ IMPORTANT #}
+
+{% if 'puzzle' in type %}
+    {% include 'jeu/puzzle.html.twig' with { jeu: jeu, niveau: niveau } %}
+
+{% elseif 'emotion' in type %}
+    {% include 'jeu/emotion.html.twig' with { jeu: jeu, niveau: niveau } %}
+
+{% elseif 'intrus' in type %}
+    {% include 'jeu/intrus.html.twig' with { jeu: jeu, niveau: niveau } %}
+
+{% elseif 'quiz' in type %}
+    {% include 'jeu/quiz.html.twig' with { jeu: jeu, niveau: niveau } %}
+
+{% else %}
+    <p style="color:red;">Type inconnu : {{ jeu.type }}</p>
+{% endif %}
