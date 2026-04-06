@@ -1,0 +1,348 @@
+{{ form_start(form, {'attr': {'class': 'space-y-8', 'id': 'suivi-form'}}) }}
+
+{# Messages d'erreur globaux #}
+{% if form.vars.errors|length > 0 %}
+<div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl mb-6">
+    <div class="flex">
+        <i class="fas fa-exclamation-circle text-rose-500 mt-0.5 mr-3"></i>
+        <div>
+            <h3 class="text-sm font-medium text-rose-800">Veuillez corriger les erreurs suivantes :</h3>
+            <ul class="mt-2 text-sm text-rose-700 list-disc list-inside">
+                {% for error in form.vars.errors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    {# Colonne Gauche - Infos principales #}
+    <div class="space-y-6">
+        
+        {# Session - OBLIGATOIRE #}
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-calendar-check text-emerald-500 mr-2"></i>
+                Session de thérapie <span class="text-rose-500">*</span>
+            </label>
+            {{ form_widget(form.session, {'attr': {'class': 'session-select form-select w-full rounded-xl border-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm transition-all', 'required': 'required'}}) }}
+            {% if form.session.vars.errors|length > 0 %}
+                <p class="mt-2 text-sm text-rose-600 flex items-center animate-pulse">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    {{ form.session.vars.errors[0].message }}
+                </p>
+            {% endif %}
+            <p class="mt-2 text-xs text-gray-500">
+                <i class="fas fa-info-circle mr-1"></i>
+                Sélectionnez la session pour laquelle vous créez ce suivi
+            </p>
+        </div>
+
+        {# Domaine #}
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-tag text-emerald-500 mr-2"></i>
+                Domaine évalué <span class="text-rose-500">*</span>
+            </label>
+            {{ form_widget(form.domaine, {'attr': {'class': 'form-select w-full rounded-xl border-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm transition-all'}}) }}
+            {% if form.domaine.vars.errors|length > 0 %}
+                <p class="mt-2 text-sm text-rose-600 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    {{ form.domaine.vars.errors[0].message }}
+                </p>
+            {% endif %}
+        </div>
+
+        {# Date #}
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-calendar text-emerald-500 mr-2"></i>
+                Date d'évaluation <span class="text-rose-500">*</span>
+            </label>
+            {{ form_widget(form.dateEvaluation, {'attr': {'class': 'form-input w-full rounded-xl border-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm transition-all'}}) }}
+            {% if form.dateEvaluation.vars.errors|length > 0 %}
+                <p class="mt-2 text-sm text-rose-600 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    {{ form.dateEvaluation.vars.errors[0].message }}
+                </p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {# Colonne Droite - Scores #}
+    <div class="space-y-6">
+        
+        {# Scores côte à côte #}
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-rose-50 to-rose-100 p-6 rounded-2xl shadow-sm border-2 border-rose-200">
+                <label class="block text-sm font-semibold text-rose-700 mb-2">
+                    <i class="fas fa-arrow-down mr-2"></i>
+                    Score Avant /10 <span class="text-rose-500">*</span>
+                </label>
+                {{ form_widget(form.scoreAvant, {'attr': {'class': 'score-avant form-input w-full rounded-xl border-2 border-rose-300 focus:border-rose-500 focus:ring-rose-500 text-center text-3xl font-bold text-rose-600 bg-white shadow-sm transition-all', 'min': '0', 'max': '10', 'required': 'required'}}) }}
+                <div class="mt-3 h-3 bg-rose-200 rounded-full overflow-hidden">
+                    <div class="score-bar-avant h-full bg-gradient-to-r from-rose-400 to-rose-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+                {% if form.scoreAvant.vars.errors|length > 0 %}
+                    <p class="mt-2 text-sm text-rose-600">{{ form.scoreAvant.vars.errors[0].message }}</p>
+                {% endif %}
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-6 rounded-2xl shadow-sm border-2 border-emerald-200">
+                <label class="block text-sm font-semibold text-emerald-700 mb-2">
+                    <i class="fas fa-arrow-up mr-2"></i>
+                    Score Après /10 <span class="text-rose-500">*</span>
+                </label>
+                {{ form_widget(form.scoreApres, {'attr': {'class': 'score-apres form-input w-full rounded-xl border-2 border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 text-center text-3xl font-bold text-emerald-600 bg-white shadow-sm transition-all', 'min': '0', 'max': '10', 'required': 'required'}}) }}
+                <div class="mt-3 h-3 bg-emerald-200 rounded-full overflow-hidden">
+                    <div class="score-bar-apres h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+                {% if form.scoreApres.vars.errors|length > 0 %}
+                    <p class="mt-2 text-sm text-rose-600">{{ form.scoreApres.vars.errors[0].message }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Progression calculée #}
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 rounded-2xl shadow-lg text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 text-sm font-medium mb-1">Progression calculée</p>
+                    <p class="text-xs text-blue-200">Score Après − Score Avant</p>
+                </div>
+                <div class="text-right">
+                    <span class="progression-display text-5xl font-bold">
+                        <span class="progression-valeur">0</span>
+                    </span>
+                    <span class="text-blue-200 text-lg ml-1">pts</span>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm">
+                <i class="fas fa-info-circle"></i>
+                <span id="progression-text">Aucune progression calculée</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{# Section Observations #}
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mt-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-clipboard-list text-emerald-500 mr-2"></i>
+        Observations détaillées
+    </h3>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                <i class="fas fa-eye text-emerald-500 mr-2"></i>
+                Comportements observés
+            </label>
+            {{ form_widget(form.comportementsObserves, {'attr': {'class': 'form-textarea w-full rounded-xl border-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm transition-all resize-none', 'rows': '4', 'placeholder': 'Décrivez ce que l\'enfant a fait pendant la séance...'}}) }}
+            <p class="mt-1 text-xs text-gray-500 text-right">
+                <span class="char-count" data-target="comportementsObserves">0</span>/2000
+            </p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-semibold text-amber-700 mb-2">
+                <i class="fas fa-exclamation-triangle text-amber-500 mr-2"></i>
+                Déclencheurs identifiés
+            </label>
+            {{ form_widget(form.declencheursIdentifies, {'attr': {'class': 'form-textarea w-full rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:ring-amber-500 shadow-sm transition-all resize-none bg-amber-50', 'rows': '3', 'placeholder': 'Qu\'est-ce qui a provoqué stress ou agitation ?'}}) }}
+            <p class="mt-1 text-xs text-gray-500 text-right">
+                <span class="char-count" data-target="declencheursIdentifies">0</span>/1000
+            </p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-semibold text-blue-700 mb-2">
+                <i class="fas fa-bullseye text-blue-500 mr-2"></i>
+                Objectifs réalisés
+            </label>
+            {{ form_widget(form.objectifsRealises, {'attr': {'class': 'form-textarea w-full rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-all resize-none bg-blue-50', 'rows': '3', 'placeholder': 'Quels objectifs ont été atteints ? À quel pourcentage ?'}}) }}
+            <p class="mt-1 text-xs text-gray-500 text-right">
+                <span class="char-count" data-target="objectifsRealises">0</span>/1500
+            </p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-semibold text-purple-700 mb-2">
+                <i class="fas fa-home text-purple-500 mr-2"></i>
+                Recommandations pour les parents
+            </label>
+            {{ form_widget(form.recommandationsParent, {'attr': {'class': 'form-textarea w-full rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:ring-purple-500 shadow-sm transition-all resize-none bg-purple-50', 'rows': '4', 'placeholder': 'Exercices et attitudes conseillés à la maison...'}}) }}
+            <p class="mt-1 text-xs text-gray-500 text-right">
+                <span class="char-count" data-target="recommandationsParent">0</span>/2000
+            </p>
+        </div>
+    </div>
+</div>
+
+{# ============ BOUTONS CRUD MODERNES ============ #}
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t-2 border-gray-100 mt-8">
+    
+    {# Bouton Retour #}
+    <a href="{{ path('app_suivi_progression_index') }}" 
+       class="w-full sm:w-auto group inline-flex items-center justify-center px-6 py-3 border-2 border-gray-300 rounded-xl shadow-sm text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200">
+        <span class="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center mr-3 transition-colors">
+            <i class="fas fa-arrow-left text-gray-600"></i>
+        </span>
+        Retour à la liste
+    </a>
+
+    <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+        
+        {# Bouton Réinitialiser #}
+        <button type="reset" 
+                class="w-full sm:w-auto group inline-flex items-center justify-center px-6 py-3 border-2 border-amber-200 rounded-xl shadow-sm text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 hover:border-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200">
+            <span class="w-8 h-8 rounded-lg bg-amber-200 group-hover:bg-amber-300 flex items-center justify-center mr-3 transition-colors">
+                <i class="fas fa-undo text-amber-700"></i>
+            </span>
+            Réinitialiser
+        </button>
+
+        {# Bouton Sauvegarder #}
+        <button type="submit" 
+                class="w-full sm:w-auto group inline-flex items-center justify-center px-8 py-3 border-2 border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transform hover:scale-105 transition-all duration-200">
+            <span class="w-8 h-8 rounded-lg bg-white/20 group-hover:bg-white/30 flex items-center justify-center mr-3 transition-colors">
+                <i class="fas fa-save text-white"></i>
+            </span>
+            {{ button_label|default('Enregistrer le suivi') }}
+        </button>
+        
+    </div>
+</div>
+
+{{ form_end(form) }}
+
+{# ============ JAVASCRIPT INTERACTIF + VALIDATION ============ #}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Éléments
+    const form = document.getElementById('suivi-form');
+    const sessionSelect = document.querySelector('.session-select');
+    const scoreAvant = document.querySelector('.score-avant');
+    const scoreApres = document.querySelector('.score-apres');
+    const progressionValeur = document.querySelector('.progression-valeur');
+    const progressionDisplay = document.querySelector('.progression-display');
+    const progressionText = document.getElementById('progression-text');
+    const barAvant = document.querySelector('.score-bar-avant');
+    const barApres = document.querySelector('.score-bar-apres');
+
+    // ============ VALIDATION OBLIGATOIRE AVANT SOUMISSION ============
+    form.addEventListener('submit', function(e) {
+        let errors = [];
+        
+        // Vérifier session
+        if (!sessionSelect.value || sessionSelect.value === '') {
+            errors.push('Veuillez sélectionner une session');
+            sessionSelect.classList.add('border-rose-500', 'ring-2', 'ring-rose-200');
+            sessionSelect.focus();
+        } else {
+            sessionSelect.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200');
+        }
+        
+        // Vérifier scores
+        if (!scoreAvant.value || scoreAvant.value < 0 || scoreAvant.value > 10) {
+            errors.push('Score avant doit être entre 0 et 10');
+            scoreAvant.classList.add('border-rose-500');
+        }
+        
+        if (!scoreApres.value || scoreApres.value < 0 || scoreApres.value > 10) {
+            errors.push('Score après doit être entre 0 et 10');
+            scoreApres.classList.add('border-rose-500');
+        }
+        
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert('⚠️ Erreurs :\n\n• ' + errors.join('\n• '));
+            return false;
+        }
+    });
+
+    // ============ CALCUL PROGRESSION ============
+    function updateProgression() {
+        const avant = parseInt(scoreAvant.value) || 0;
+        const apres = parseInt(scoreApres.value) || 0;
+        const progression = apres - avant;
+
+        // Barres visuelles
+        barAvant.style.width = Math.min(avant * 10, 100) + '%';
+        barApres.style.width = Math.min(apres * 10, 100) + '%';
+
+        // Valeur
+        const signe = progression > 0 ? '+' : '';
+        progressionValeur.textContent = signe + progression;
+        
+        // Style selon progression
+        let couleur, message, icon;
+        if (progression > 3) {
+            couleur = 'text-emerald-300';
+            message = '🌟 Excellente progression !';
+            icon = 'fa-star';
+        } else if (progression > 0) {
+            couleur = 'text-emerald-200';
+            message = '👍 Bonne progression';
+            icon = 'fa-thumbs-up';
+        } else if (progression === 0) {
+            couleur = 'text-blue-200';
+            message = '➖ Progression stable';
+            icon = 'fa-minus';
+        } else {
+            couleur = 'text-rose-300';
+            message = '⚠️ Régression détectée';
+            icon = 'fa-exclamation-triangle';
+        }
+        
+        progressionDisplay.className = 'progression-display text-5xl font-bold ' + couleur;
+        progressionText.innerHTML = `<i class="fas ${icon} mr-2"></i>${message}`;
+    }
+
+    // ============ COMpteURS DE CARACTÈRES ============
+    function updateCharCount(textarea) {
+        const match = textarea.name.match(/\[(.*?)\]/);
+        if (!match) return;
+        
+        const name = match[1];
+        const counter = document.querySelector(`[data-target="${name}"]`);
+        if (counter) {
+            counter.textContent = textarea.value.length;
+            const max = name === 'comportementsObserves' || name === 'recommandationsParent' ? 2000 : 
+                       name === 'declencheursIdentifies' ? 1000 : 1500;
+            
+            if (textarea.value.length > max) {
+                counter.classList.add('text-rose-600', 'font-bold');
+                textarea.classList.add('border-rose-500');
+            } else {
+                counter.classList.remove('text-rose-600', 'font-bold');
+                textarea.classList.remove('border-rose-500');
+            }
+        }
+    }
+
+    // Event listeners
+    sessionSelect?.addEventListener('change', function() {
+        if (this.value) {
+            this.classList.remove('border-rose-500', 'ring-2', 'ring-rose-200');
+        }
+    });
+    
+    scoreAvant?.addEventListener('input', updateProgression);
+    scoreApres?.addEventListener('input', updateProgression);
+    
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('input', () => updateCharCount(textarea));
+        updateCharCount(textarea);
+    });
+    
+    // Initialisation
+    updateProgression();
+});
+</script>

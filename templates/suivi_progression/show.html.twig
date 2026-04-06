@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suivi #{{ suivi.id }} - TSA Thérapie{% endblock %}
+
+{% block body %}
+<div class="fade-in max-w-4xl mx-auto py-8 px-4">
+
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900">Suivi #{{ suivi.id }}</h1>
+        <p class="text-gray-500 mt-2">Session #{{ suivi.session.id }} — {{ suivi.session.dateHeure|date('d/m/Y') }}</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 space-y-6">
+
+        <div class="grid grid-cols-2 gap-6">
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Domaine</p>
+                <p class="text-lg font-bold text-indigo-700">{{ suivi.domaine }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Date évaluation</p>
+                <p class="text-lg font-bold text-gray-800">{{ suivi.dateEvaluation|date('d/m/Y') }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Score Avant</p>
+                <p class="text-4xl font-bold text-rose-600">{{ suivi.scoreAvant }}/10</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Score Après</p>
+                <p class="text-4xl font-bold text-emerald-600">{{ suivi.scoreApres }}/10</p>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 rounded-xl p-4 text-center">
+            <p class="text-sm text-blue-600 font-semibold">Progression</p>
+            <p class="text-5xl font-bold {{ suivi.progression > 0 ? 'text-emerald-600' : suivi.progression < 0 ? 'text-rose-600' : 'text-gray-600' }}">
+                {{ suivi.progression > 0 ? '+' : '' }}{{ suivi.progression }}
+            </p>
+        </div>
+
+        {% if suivi.comportementsObserves %}
+        <div>
+            <p class="text-sm font-semibold text-gray-500 mb-1">Comportements observés</p>
+            <p class="text-gray-800 bg-gray-50 rounded-xl p-4">{{ suivi.comportementsObserves }}</p>
+        </div>
+        {% endif %}
+
+        {% if suivi.declencheursIdentifies %}
+        <div>
+            <p class="text-sm font-semibold text-amber-600 mb-1">Déclencheurs identifiés</p>
+            <p class="text-gray-800 bg-amber-50 rounded-xl p-4">{{ suivi.declencheursIdentifies }}</p>
+        </div>
+        {% endif %}
+
+        {% if suivi.objectifsRealises %}
+        <div>
+            <p class="text-sm font-semibold text-blue-600 mb-1">Objectifs réalisés</p>
+            <p class="text-gray-800 bg-blue-50 rounded-xl p-4">{{ suivi.objectifsRealises }}</p>
+        </div>
+        {% endif %}
+
+        {% if suivi.recommandationsParent %}
+        <div>
+            <p class="text-sm font-semibold text-purple-600 mb-1">Recommandations parents</p>
+            <p class="text-gray-800 bg-purple-50 rounded-xl p-4">{{ suivi.recommandationsParent }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div class="flex gap-4 mt-6">
+        <a href="{{ path('app_suivi_progression_index') }}" 
+           class="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold transition-all">
+            ← Retour
+        </a>
+        <a href="{{ path('app_suivi_progression_edit', {'id': suivi.id}) }}" 
+           class="px-6 py-3 rounded-xl bg-amber-500 text-white hover:bg-amber-600 font-semibold transition-all">
+            ✏️ Modifier
+        </a>
+        <a href="{{ path('app_suivi_progression_print', {'id': suivi.id}) }}" target="_blank"
+           class="px-6 py-3 rounded-xl bg-purple-500 text-white hover:bg-purple-600 font-semibold transition-all">
+            🖨️ Imprimer
+        </a>
+    </div>
+
+</div>
+{% endblock %}

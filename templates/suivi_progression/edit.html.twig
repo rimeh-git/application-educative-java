@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Suivi #{{ suivi.id }} - TSA Thérapie{% endblock %}
+
+{% block body %}
+<div class="fade-in max-w-6xl mx-auto py-8 px-4">
+    
+    {# Header #}
+    <div class="mb-8 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg mb-4">
+            <i class="fas fa-edit text-3xl text-white"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900">Modifier le Suivi #{{ suivi.id }}</h1>
+        <p class="text-gray-500 mt-2">
+            Session #{{ suivi.session.id }} • {{ suivi.session.dateHeure|date('d/m/Y') }}
+        </p>
+    </div>
+
+    {# Card Formulaire #}
+    <div class="bg-gray-50 rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+        <div class="p-8">
+            {{ include('suivi_progression/_form.html.twig', {'button_label': '💾 Mettre à jour'}) }}
+        </div>
+    </div>
+
+    {# Zone Danger - Suppression #}
+    <div class="mt-8 bg-gradient-to-r from-rose-50 to-red-50 rounded-2xl border-2 border-rose-200 p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-rose-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-rose-900">Zone de danger</h3>
+                    <p class="text-sm text-rose-700">Cette action supprimera définitivement le suivi</p>
+                </div>
+            </div>
+            
+            <form method="post" action="{{ path('app_suivi_progression_delete', {'id': suivi.id}) }}" 
+                  onsubmit="return confirm('🗑️ Êtes-vous sûr de vouloir supprimer ce suivi ?\n\nCette action est irréversible.');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ suivi.id) }}">
+                <button type="submit" 
+                        class="group inline-flex items-center px-6 py-3 border-2 border-rose-300 rounded-xl shadow-sm text-sm font-semibold text-rose-700 bg-white hover:bg-rose-50 hover:border-rose-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-all duration-200">
+                    <span class="w-8 h-8 rounded-lg bg-rose-100 group-hover:bg-rose-200 flex items-center justify-center mr-3 transition-colors">
+                        <i class="fas fa-trash-alt text-rose-600"></i>
+                    </span>
+                    Supprimer le suivi
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
