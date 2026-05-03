@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques Sessions & Progression{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">📊 Statistiques Sessions & Progression</h1>
+
+    <!-- KPIs Sessions -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700">Total Sessions</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ statsSession.total }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700">Sessions Terminées</h3>
+            <p class="text-3xl font-bold text-green-600">{{ statsSession.terminees }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700">Total Suivis</h3>
+            <p class="text-3xl font-bold text-purple-600">{{ statsProgression.total }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-700">Progression Moy.</h3>
+            <p class="text-3xl font-bold text-orange-600">{{ statsProgression.avgProgression > 0 ? '+' : '' }}{{ statsProgression.avgProgression }}</p>
+        </div>
+    </div>
+
+    <!-- Charts Row 1: Sessions -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Sessions par Mois</h3>
+            <canvas id="sessionsParMoisChart"></canvas>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Statuts des Sessions</h3>
+            <canvas id="statutsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Charts Row 2: Progression -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Progression par Domaine</h3>
+            <canvas id="progressionDomaineChart"></canvas>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Répartition Progression</h3>
+            <canvas id="repartitionProgressionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Charts Row 3: Combined -->
+    <div class="grid grid-cols-1 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4">Sessions par Type</h3>
+            <canvas id="sessionsParTypeChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Sessions par Mois
+new Chart(document.getElementById('sessionsParMoisChart'), {
+    type: 'line',
+    data: {
+        labels: {{ statsSession.sessionsParMois|map(m => m.month)|json_encode|raw }},
+        datasets: [{
+            label: 'Sessions',
+            data: {{ statsSession.sessionsParMois|map(m => m.count)|json_encode|raw }},
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Statuts Sessions
+new Chart(document.getElementById('statutsChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Planifiées', 'En Cours', 'Terminées', 'Annulées'],
+        datasets: [{
+            data: [{{ statsSession.planifiees }}, {{ statsSession.enCours }}, {{ statsSession.terminees }}, {{ statsSession.annulees }}],
+            backgroundColor: ['#9CA3AF', '#F59E0B', '#10B981', '#EF4444']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } }
+    }
+});
+
+// Progression par Domaine
+new Chart(document.getElementById('progressionDomaineChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ statsProgression.parDomaine|map(d => d.domaine)|json_encode|raw }},
+        datasets: [{
+            label: 'Progression Moyenne',
+            data: {{ statsProgression.parDomaine|map(d => d.avgProgression|round(2))|json_encode|raw }},
+            backgroundColor: 'rgba(139, 92, 246, 0.8)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+// Répartition Progression
+new Chart(document.getElementById('repartitionProgressionChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Positive', 'Stable', 'Négative'],
+        datasets: [{
+            data: [{{ statsProgression.progressionPositive }}, {{ statsProgression.progressionStable }}, {{ statsProgression.progressionNegative }}],
+            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
+        }]
+    },
+    options: { responsive: true }
+});
+
+// Sessions par Type
+new Chart(document.getElementById('sessionsParTypeChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ statsSession.sessionsParType|map(t => t.type)|json_encode|raw }},
+        datasets: [{
+            label: 'Nombre de Sessions',
+            data: {{ statsSession.sessionsParType|map(t => t.count)|json_encode|raw }},
+            backgroundColor: 'rgba(59, 130, 246, 0.8)'
+        }]
+    },
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } }
+    }
+});
+</script>
+{% endblock %}

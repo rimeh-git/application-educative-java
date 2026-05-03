@@ -1,0 +1,568 @@
+{% extends 'base.html.twig' %}
+{% block title %}Dashboard Admin — TSA Thérapie{% endblock %}
+{% block body %}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+:root {
+  --ink:    #0a0f1e;
+  --ink2:   #3d4a6b;
+  --muted:  #8b97b4;
+  --border: #e8edf5;
+  --bg:     #f4f6fb;
+  --white:  #ffffff;
+  --indigo: #4f46e5;
+  --violet: #7c3aed;
+  --emerald:#059669;
+  --amber:  #d97706;
+  --rose:   #e11d48;
+  --cyan:   #0891b2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+.d{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);padding:32px;min-height:100vh}
+
+/* ── Fade-in animation ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.d>*{animation:fadeUp .5s ease both}
+.d>*:nth-child(1){animation-delay:.05s}
+.d>*:nth-child(2){animation-delay:.12s}
+.d>*:nth-child(3){animation-delay:.19s}
+.d>*:nth-child(4){animation-delay:.26s}
+.d>*:nth-child(5){animation-delay:.33s}
+
+/* ── Header ── */
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.hdr-left p{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--indigo);margin-bottom:4px}
+.hdr-left h1{font-size:28px;font-weight:800;color:var(--ink);line-height:1.1}
+.hdr-left span{font-size:13px;color:var(--muted);margin-top:4px;display:block}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--indigo);color:#fff}
+.btn-primary:hover{background:#4338ca;transform:translateY(-2px);box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.btn-success{background:var(--emerald);color:#fff}
+.btn-success:hover{background:#047857;transform:translateY(-2px);box-shadow:0 8px 20px rgba(5,150,105,.3)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ── KPI Grid ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:var(--white);border-radius:20px;padding:22px;position:relative;overflow:hidden;border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
+.kpi-stripe{position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.kpi-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.kpi-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.kpi-val{font-size:34px;font-weight:800;line-height:1;margin-bottom:4px}
+.kpi-label{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.kpi-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.kpi-foot strong{color:var(--emerald)}
+
+/* ── Charts Row ── */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+.card{background:var(--white);border-radius:20px;padding:24px;border:1px solid var(--border)}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.card-title{font-size:15px;font-weight:800;color:var(--ink)}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.chip{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--bg);color:var(--ink2)}
+
+/* ── Table ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:0 16px 12px;text-align:left;border-bottom:2px solid var(--border)}
+tbody td{padding:14px 16px;font-size:13px;color:var(--ink2);border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:#f8faff}
+.avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* ── Bottom Row ── */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* ── Progress list ── */
+.prog-item{margin-bottom:16px}
+.prog-item:last-child{margin-bottom:0}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-name{font-size:13px;font-weight:600;color:var(--ink2)}
+.prog-val{font-size:13px;font-weight:800}
+.prog-bar{height:7px;background:var(--bg);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* ── Activity feed ── */
+.feed-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.feed-text{font-size:13px;color:var(--ink2);line-height:1.4}
+.feed-time{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── Type cards ── */
+.type-card{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:14px;margin-bottom:10px;transition:background .2s}
+.type-card:last-child{margin-bottom:0}
+.type-card:hover{background:#eef0ff}
+.type-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.type-pct{margin-left:auto;text-align:right}
+.type-pct-val{font-size:16px;font-weight:800}
+.type-pct-bar{width:60px;height:5px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:4px}
+.type-pct-fill{height:100%;border-radius:99px}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.charts-row{grid-template-columns:1fr}.bottom-row{grid-template-columns:1fr}}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr}.bottom-row{grid-template-columns:1fr}}
+</style>
+
+{% set totalS = stats.totalSessions ?? 0 %}
+{% set totalV = stats.totalSuivis    ?? 0 %}
+{% set score  = stats.scoreMoyen     ?? 0 %}
+{% set amelio = stats.ameliorations  ?? 0 %}
+{% set aba    = stats.sessionsAba    ?? 0 %}
+{% set pecs   = stats.sessionsPecs   ?? 0 %}
+{% set ortho  = stats.sessionsOrtho  ?? 0 %}
+
+<div class="d">
+
+  {# ── Header ── #}
+  <div class="hdr">
+    <div class="hdr-left">
+      <p>Administration</p>
+      <h1>Tableau de bord</h1>
+      <span>Vue d'ensemble — {{ "now"|date("d/m/Y") }}</span>
+    </div>
+    <div class="btns">
+      <a href="{{ path('app_session_new') }}" class="btn btn-success"><i class="fas fa-plus"></i> Nouvelle Session</a>
+      <a href="{{ path('app_suivi_progression_new') }}" class="btn btn-primary"><i class="fas fa-chart-line"></i> Nouveau Suivi</a>
+    </div>
+  </div>
+
+  {# ── RISK ALERTS ── #}
+  {% if criticalNotifications is not empty %}
+  <div style="margin-bottom:24px;padding:16px;background:#fef2f2;border-left:4px solid #e11d48;border-radius:12px">
+    <div style="display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:24px;margin-top:2px">🚨</div>
+      <div style="flex:1">
+        <div style="font-weight:800;color:#7f1d1d;font-size:14px;margin-bottom:4px">Risques d'abandon détectés</div>
+        <div style="font-size:12px;color:#991b1b;margin-bottom:8px">{{ criticalNotifications|length }} session(s) en risque critique (score ≥ 70%)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          {% for notif in criticalNotifications|slice(0,3) %}
+          <a href="{{ path('app_session_show', {id: notif.session.id}) }}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,.6);border-radius:8px;font-size:11px;font-weight:700;color:#7f1d1d;text-decoration:none;border:1px solid rgba(225,29,72,.2);transition:all .2s" onmouseover="this.style.background='rgba(225,29,72,.1)'" onmouseout="this.style.background='rgba(255,255,255,.6)'">
+            <i class="fas fa-alert"></i> Session #{{ notif.session.id }} ({{ notif.riskScore|round }}%)
+          </a>
+          {% endfor %}
+          {% if criticalNotifications|length > 3 %}
+          <div style="padding:6px 12px;color:#991b1b;font-size:11px;font-weight:700">+{{ criticalNotifications|length - 3 }} de plus</div>
+          {% endif %}
+        </div>
+      </div>
+      <a href="#risk-details" style="text-decoration:none;color:#dc2626;font-weight:700;font-size:12px">Détails →</a>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── UNREAD NOTIFICATIONS ── #}
+  {% if unreadNotifications is not empty %}
+  <div style="margin-bottom:24px;padding:16px;background:#f0fdf4;border-left:4px solid #059669;border-radius:12px">
+    <div style="display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:24px;margin-top:2px">📬</div>
+      <div style="flex:1">
+        <div style="font-weight:800;color:#15803d;font-size:14px;margin-bottom:4px">Notifications non lues</div>
+        <div style="font-size:12px;color:#166534;margin-bottom:8px">{{ unreadNotifications|length }} notification(s) d'alertes</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          {% for notif in unreadNotifications|slice(0,3) %}
+          <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(5,150,105,.1);border-radius:6px;font-size:10px;font-weight:600;color:#15803d;border:1px solid rgba(5,150,105,.2)">
+            <i class="fas fa-envelope"></i> {{ notif.title }}
+          </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ── KPIs ── #}
+  <div class="kpi-grid">
+
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--indigo)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:#eef0ff;color:var(--indigo)"><i class="fas fa-calendar-check"></i></div>
+        <span class="kpi-badge" style="background:#eef0ff;color:var(--indigo)">Total</span>
+      </div>
+      <div class="kpi-val" style="color:var(--indigo)">{{ totalS }}</div>
+      <div class="kpi-label">Sessions</div>
+      <div class="kpi-foot">ABA: <strong>{{ aba }}</strong> · PECS: <strong>{{ pecs }}</strong> · Ortho: <strong>{{ ortho }}</strong></div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--emerald)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:#d1fae5;color:var(--emerald)"><i class="fas fa-chart-line"></i></div>
+        <span class="kpi-badge" style="background:#d1fae5;color:var(--emerald)">Suivi</span>
+      </div>
+      <div class="kpi-val" style="color:var(--emerald)">{{ totalV }}</div>
+      <div class="kpi-label">Progressions suivies</div>
+      <div class="kpi-foot">Améliorations: <strong>{{ amelio }}</strong></div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--amber)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:#fef3c7;color:var(--amber)"><i class="fas fa-star"></i></div>
+        <span class="kpi-badge" style="background:#fef3c7;color:var(--amber)">Moy.</span>
+      </div>
+      <div class="kpi-val" style="color:var(--amber)">{{ score }}</div>
+      <div class="kpi-label">Score moyen /10</div>
+      <div class="kpi-foot">Sur tous les domaines suivis</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--cyan)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:#cffafe;color:var(--cyan)"><i class="fas fa-child"></i></div>
+        <span class="kpi-badge" style="background:#cffafe;color:var(--cyan)">Actifs</span>
+      </div>
+      <div class="kpi-val" style="color:var(--cyan)">{{ stats.totalEnfants ?? 0 }}</div>
+      <div class="kpi-label">Enfants suivis</div>
+      <div class="kpi-foot">Plateforme thérapeutique</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--rose)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:#ffe4e6;color:var(--rose)"><i class="fas fa-exclamation-triangle"></i></div>
+        {% if stats.riskNotificationsCount > 0 %}
+          <span class="kpi-badge" style="background:#ffe4e6;color:var(--rose)">⚠️ ALERTE</span>
+        {% else %}
+          <span class="kpi-badge" style="background:#ffe4e6;color:var(--rose)">Sain</span>
+        {% endif %}
+      </div>
+      <div class="kpi-val" style="color:var(--rose)">{{ stats.riskNotificationsCount ?? 0 }}</div>
+      <div class="kpi-label">Risques critiques</div>
+      <div class="kpi-foot">Sessions en danger d'abandon</div>
+    </div>
+
+  </div>
+
+  {# ── Charts Row ── #}
+  <div class="charts-row">
+
+    {# Évolution mensuelle #}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">Évolution des sessions</div>
+          <div class="card-sub">6 derniers mois</div>
+        </div>
+        <span class="chip"><i class="fas fa-chart-bar mr-1"></i> Mensuel</span>
+      </div>
+      <canvas id="barChart" height="120"></canvas>
+    </div>
+
+    {# Répartition types #}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">Répartition</div>
+          <div class="card-sub">Par type de thérapie</div>
+        </div>
+      </div>
+      <canvas id="doughnut" height="160"></canvas>
+      <div style="margin-top:16px">
+        <div class="type-card">
+          <div class="type-icon" style="background:#eef0ff;color:var(--indigo)"><i class="fas fa-brain"></i></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">ABA</div>
+            <div style="font-size:11px;color:var(--muted)">{{ aba }} sessions</div>
+          </div>
+          <div class="type-pct">
+            <div class="type-pct-val" style="color:var(--indigo)">{{ totalS > 0 ? ((aba/totalS)*100)|round : 0 }}%</div>
+            <div class="type-pct-bar"><div class="type-pct-fill" style="width:{{ totalS > 0 ? ((aba/totalS)*100)|round : 0 }}%;background:var(--indigo)"></div></div>
+          </div>
+        </div>
+        <div class="type-card">
+          <div class="type-icon" style="background:#f3e8ff;color:var(--violet)"><i class="fas fa-images"></i></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">PECS</div>
+            <div style="font-size:11px;color:var(--muted)">{{ pecs }} sessions</div>
+          </div>
+          <div class="type-pct">
+            <div class="type-pct-val" style="color:var(--violet)">{{ totalS > 0 ? ((pecs/totalS)*100)|round : 0 }}%</div>
+            <div class="type-pct-bar"><div class="type-pct-fill" style="width:{{ totalS > 0 ? ((pecs/totalS)*100)|round : 0 }}%;background:var(--violet)"></div></div>
+          </div>
+        </div>
+        <div class="type-card">
+          <div class="type-icon" style="background:#ccfbf1;color:#0d9488"><i class="fas fa-comments"></i></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">Orthophonie</div>
+            <div style="font-size:11px;color:var(--muted)">{{ ortho }} sessions</div>
+          </div>
+          <div class="type-pct">
+            <div class="type-pct-val" style="color:#0d9488">{{ totalS > 0 ? ((ortho/totalS)*100)|round : 0 }}%</div>
+            <div class="type-pct-bar"><div class="type-pct-fill" style="width:{{ totalS > 0 ? ((ortho/totalS)*100)|round : 0 }}%;background:#0d9488"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {# ── Sessions Table ── #}
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-hdr">
+      <div>
+        <div class="card-title">Sessions récentes</div>
+        <div class="card-sub">Dernières séances enregistrées</div>
+      </div>
+      <a href="{{ path('app_session_index') }}" class="btn btn-primary" style="padding:8px 16px;font-size:12px">
+        Voir tout <i class="fas fa-arrow-right ml-1"></i>
+      </a>
+    </div>
+    <div class="tbl-wrap">
+      {% if sessions is defined and sessions is not empty %}
+      <table>
+        <thead>
+          <tr>
+            <th>Enfant</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Durée</th>
+            <th>Agitation</th>
+            <th>Technique</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sessions|slice(0,7) %}
+          {% set colors = {'ABA':['#eef0ff','#4f46e5'], 'PECS':['#f3e8ff','#7c3aed'], 'Orthophonie':['#ccfbf1','#0d9488']} %}
+          {% set c = colors[s.type] ?? ['#f1f5f9','#64748b'] %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="avatar" style="background:linear-gradient(135deg,{{ c[1] }},{{ c[0] }})">
+                  {{ s.type|first }}
+                </div>
+                <div>
+                  <div style="font-weight:700;font-size:13px;color:var(--ink)">Session #{{ s.id }}</div>
+                  <div style="font-size:11px;color:var(--muted)">{{ s.dateHeure|date('H:i') }}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="tag" style="background:{{ c[0] }};color:{{ c[1] }}">{{ s.type }}</span></td>
+            <td style="font-weight:600">{{ s.dateHeure|date('d/m/Y') }}</td>
+            <td><span style="font-weight:700;color:var(--ink)">{{ s.duree }}</span><span style="color:var(--muted);font-size:11px"> min</span></td>
+            <td>
+              {% if s.niveauAgitation == 'CALME' %}
+                <span class="tag" style="background:#d1fae5;color:#065f46"><i class="fas fa-circle" style="font-size:6px"></i> CALME</span>
+              {% elseif s.niveauAgitation == 'AGITE' %}
+                <span class="tag" style="background:#fef3c7;color:#92400e"><i class="fas fa-circle" style="font-size:6px"></i> AGITÉ</span>
+              {% else %}
+                <span class="tag" style="background:#ffe4e6;color:#9f1239"><i class="fas fa-circle" style="font-size:6px"></i> CRISE</span>
+              {% endif %}
+            </td>
+            <td style="color:var(--muted);font-size:12px">{{ s.techniqueUtilisee|default('—')|slice(0,20) }}…</td>
+            <td>
+              <a href="{{ path('app_session_show', {id: s.id}) }}" class="btn btn-primary" style="padding:6px 12px;font-size:11px">
+                <i class="fas fa-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div style="text-align:center;padding:48px;color:var(--muted)">
+        <i class="fas fa-calendar-times" style="font-size:36px;opacity:.3;display:block;margin-bottom:12px"></i>
+        <p style="font-weight:600">Aucune session enregistrée</p>
+        <a href="{{ path('app_session_new') }}" class="btn btn-primary" style="margin-top:16px;display:inline-flex">
+          <i class="fas fa-plus"></i> Créer la première
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {# ── Bottom Row ── #}
+  <div class="bottom-row" id="risk-details">
+
+    {# Risk Analysis #}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">Analyse des risques</div>
+          <div class="card-sub">Prédiction d'abandons thérapeutiques</div>
+        </div>
+      </div>
+      {% if riskAssessments is not empty and riskAssessments.score is defined %}
+        {% set riskScore = riskAssessments.score %}
+        {% set riskNiveau = riskAssessments.niveau %}
+        {% set riskColor = riskScore >= 75 ? '#dc2626' : (riskScore >= 50 ? '#d97706' : (riskScore >= 25 ? '#ca8a04' : '#059669')) %}
+        {% set riskBg    = riskScore >= 75 ? '#fee2e2' : (riskScore >= 50 ? '#fef3c7' : (riskScore >= 25 ? '#fef08a' : '#d1fae5')) %}
+        <div style="padding:12px;background:{{ riskBg }};border-radius:10px;border-left:3px solid {{ riskColor }};margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-weight:700;font-size:13px;color:{{ riskColor }}">{{ riskNiveau }}</span>
+            <span style="font-weight:800;font-size:18px;color:{{ riskColor }}">{{ riskScore }}%</span>
+          </div>
+          <div style="font-size:11px;color:#666">Score global de risque d'abandon</div>
+        </div>
+        {% for key, facteur in riskAssessments.facteurs %}
+        <div style="margin-bottom:8px;font-size:12px;color:var(--ink2)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+            <span>{{ facteur.label }}</span>
+            <span style="font-weight:700">{{ facteur.score }}%</span>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:99px;overflow:hidden">
+            <div style="height:100%;width:{{ facteur.score }}%;background:var(--indigo);border-radius:99px"></div>
+          </div>
+        </div>
+        {% endfor %}
+        {% for rec in riskAssessments.recommandations|slice(0,2) %}
+        <div style="font-size:11px;color:#555;margin-top:6px;padding:6px 8px;background:var(--bg);border-radius:6px">{{ rec }}</div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align:center;padding:24px;color:var(--muted)">
+          <i class="fas fa-smile" style="font-size:28px;opacity:.3;display:block;margin-bottom:8px"></i>
+          <p style="font-size:12px">Aucun risque d'abandon détecté</p>
+        </div>
+      {% endif %}
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">Scores par domaine</div>
+          <div class="card-sub">Moyenne des progressions</div>
+        </div>
+      </div>
+      {% set domains = [
+        {name:'Communication', key:'communication', color:'#4f46e5', icon:'fa-comments'},
+        {name:'Socialisation',  key:'socialisation', color:'#7c3aed', icon:'fa-users'},
+        {name:'Comportement',   key:'comportement',  color:'#059669', icon:'fa-hand-paper'},
+        {name:'Autonomie',      key:'autonomie',     color:'#d97706', icon:'fa-brain'},
+      ] %}
+      {% for dom in domains %}
+      {% set val = attribute(stats, dom.key) ?? 0 %}
+      <div class="prog-item">
+        <div class="prog-top">
+          <div class="prog-name"><i class="fas {{ dom.icon }}" style="color:{{ dom.color }};margin-right:6px"></i>{{ dom.name }}</div>
+          <div class="prog-val" style="color:{{ dom.color }}">{{ val }}<span style="font-size:11px;font-weight:500;color:var(--muted)">/10</span></div>
+        </div>
+        <div class="prog-bar">
+          <div class="prog-fill" style="width:{{ val * 10 }}%;background:{{ dom.color }}"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# Radar chart #}
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">Profil global</div>
+          <div class="card-sub">Radar des compétences</div>
+        </div>
+      </div>
+      <canvas id="radarChart" height="200"></canvas>
+    </div>
+
+    {# Accès rapides #}
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-title">Accès rapides</div>
+      </div>
+      {% set links = [
+        {label:'Toutes les sessions', icon:'fa-calendar-alt', route:'app_session_index',           bg:'#eef0ff', color:'#4f46e5'},
+        {label:'Tous les suivis',     icon:'fa-chart-line',   route:'app_suivi_progression_index',  bg:'#d1fae5', color:'#059669'},
+        {label:'Nouvelle session',    icon:'fa-plus',         route:'app_session_new',              bg:'#fef3c7', color:'#d97706'},
+        {label:'Nouveau suivi',       icon:'fa-edit',         route:'app_suivi_progression_new',    bg:'#f3e8ff', color:'#7c3aed'},
+      ] %}
+      {% for lnk in links %}
+      <a href="{{ path(lnk.route) }}" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;text-decoration:none;background:var(--bg);margin-bottom:10px;transition:all .2s;border:1px solid transparent" onmouseover="this.style.borderColor='{{ lnk.color }}';this.style.background='{{ lnk.bg }}'" onmouseout="this.style.borderColor='transparent';this.style.background='var(--bg)'">
+        <div style="width:38px;height:38px;border-radius:11px;background:{{ lnk.bg }};color:{{ lnk.color }};display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">
+          <i class="fas {{ lnk.icon }}"></i>
+        </div>
+        <span style="font-size:13px;font-weight:700;color:var(--ink)">{{ lnk.label }}</span>
+        <i class="fas fa-chevron-right" style="margin-left:auto;font-size:11px;color:var(--muted)"></i>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+const ink2  = '#3d4a6b';
+const muted = '#8b97b4';
+const border= '#e8edf5';
+
+// ── Bar Chart ──
+new Chart(document.getElementById('barChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Nov','Déc','Jan','Fév','Mar','Avr'],
+    datasets: [{
+      label: 'Sessions',
+      data: [3,5,4,7,6,{{ stats.totalSessions ?? 2 }}],
+      backgroundColor: 'rgba(79,70,229,.15)',
+      borderColor: '#4f46e5',
+      borderWidth: 2,
+      borderRadius: 10,
+      borderSkipped: false,
+    },{
+      label: 'Suivis',
+      data: [2,4,3,5,4,{{ stats.totalSuivis ?? 1 }}],
+      backgroundColor: 'rgba(5,150,105,.12)',
+      borderColor: '#059669',
+      borderWidth: 2,
+      borderRadius: 10,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { font: { family:'Plus Jakarta Sans', weight:'700' }, color: ink2 }}},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { family:'Plus Jakarta Sans' }, color: muted }},
+      y: { grid: { color: border },  ticks: { font: { family:'Plus Jakarta Sans' }, color: muted }}
+    }
+  }
+});
+
+// ── Doughnut ──
+new Chart(document.getElementById('doughnut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['ABA','PECS','Orthophonie'],
+    datasets: [{ data: [{{ aba }},{{ pecs }},{{ ortho }}], backgroundColor:['#4f46e5','#7c3aed','#0d9488'], borderWidth: 0, hoverOffset: 6 }]
+  },
+  options: {
+    cutout: '72%',
+    plugins: { legend: { display: false }}
+  }
+});
+
+// ── Radar ──
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Communication','Socialisation','Comportement','Autonomie'],
+    datasets: [{
+      label: 'Score moyen',
+      data: [{{ stats.communication ?? 0 }},{{ stats.socialisation ?? 0 }},{{ stats.comportement ?? 0 }},{{ stats.autonomie ?? 0 }}],
+      backgroundColor: 'rgba(79,70,229,.12)',
+      borderColor: '#4f46e5',
+      borderWidth: 2,
+      pointBackgroundColor: '#4f46e5',
+      pointRadius: 4,
+    }]
+  },
+  options: {
+    scales: {
+      r: {
+        min: 0, max: 10,
+        ticks: { stepSize: 2, font: { family:'Plus Jakarta Sans', size: 10 }, color: muted, backdropColor: 'transparent' },
+        grid: { color: border },
+        pointLabels: { font: { family:'Plus Jakarta Sans', weight:'700', size: 11 }, color: ink2 }
+      }
+    },
+    plugins: { legend: { display: false }}
+  }
+});
+</script>
+
+{% endblock %}

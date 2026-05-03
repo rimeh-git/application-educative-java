@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer Réunion Google Meet{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-center">🎥 Créer un Lien Google Meet SANS Sécurité</h1>
+        
+        <div class="bg-green-50 border-2 border-green-300 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-green-900 mb-3 flex items-center gap-2">
+                <i class="fas fa-unlock"></i> Accès Direct Sans Autorisation
+            </h2>
+            <p class="text-green-800 font-semibold">
+                Avec cette méthode, N'IMPORTE QUI avec le lien peut entrer DIRECTEMENT dans la réunion sans demander d'autorisation.
+            </p>
+        </div>
+
+        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold text-blue-900 mb-4">📋 Méthode: Créer une Réunion Ouverte</h2>
+            <ol class="space-y-4 text-blue-800">
+                <li class="flex items-start gap-3">
+                    <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">1</span>
+                    <div>
+                        <p class="font-bold mb-2">Ouvrez Google Meet</p>
+                        <a href="https://meet.google.com" target="_blank"
+                           class="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-external-link-alt"></i> Ouvrir Google Meet
+                        </a>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">2</span>
+                    <div>
+                        <p class="font-bold mb-2">Cliquez sur "Nouvelle réunion" → "Créer une réunion pour plus tard"</p>
+                        <p class="text-sm">Cela génère un lien permanent</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">3</span>
+                    <div>
+                        <p class="font-bold mb-2">Copiez le lien généré</p>
+                        <div class="bg-white border-2 border-blue-300 rounded-lg p-3 mt-2 font-mono text-sm">
+                            https://meet.google.com/abc-defg-hij
+                        </div>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">4</span>
+                    <div>
+                        <p class="font-bold mb-2 text-green-700">✅ NE PAS entrer dans la réunion en premier</p>
+                        <p class="text-sm">Laissez le PATIENT entrer en premier - il deviendra l'organisateur et pourra désactiver la sécurité</p>
+                    </div>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">5</span>
+                    <div>
+                        <p class="font-bold mb-2">Collez le lien dans votre session</p>
+                        <p class="text-sm">Dans le formulaire de création de session, champ "Lien Google Meet"</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-8">
+            <h3 class="font-bold text-purple-900 mb-3 flex items-center gap-2">
+                <i class="fas fa-cog"></i> Alternative: Désactiver la Sécurité Manuellement
+            </h3>
+            <p class="text-purple-800 mb-3">
+                Si vous entrez en premier dans la réunion:
+            </p>
+            <ol class="text-purple-800 text-sm space-y-2">
+                <li>1. Cliquez sur l'icône <strong>🛡️ Sécurité</strong> (en bas de l'écran)</li>
+                <li>2. <strong>DÉSACTIVEZ</strong> "Demander l'autorisation avant d'entrer"</li>
+                <li>3. Maintenant tout le monde peut entrer directement</li>
+            </ol>
+        </div>
+
+        <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 mb-8">
+            <h3 class="font-bold text-green-900 mb-3 flex items-center gap-2">
+                <i class="fas fa-check-circle"></i> Résultat
+            </h3>
+            <ul class="space-y-2 text-green-800">
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-600"></i>
+                    <strong>Accès direct</strong> - Pas de demande d'autorisation
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-600"></i>
+                    <strong>Caméra activée</strong> - Dès l'entrée
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-600"></i>
+                    <strong>Pas de sécurité</strong> - Tout le monde peut entrer
+                </li>
+                <li class="flex items-center gap-2">
+                    <i class="fas fa-check text-green-600"></i>
+                    <strong>Lien permanent</strong> - Réutilisable
+                </li>
+            </ul>
+        </div>
+
+        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6 mb-8">
+            <h3 class="font-bold text-red-900 mb-3 flex items-center gap-2">
+                <i class="fas fa-shield-alt"></i> Note de Sécurité
+            </h3>
+            <p class="text-red-800">
+                ⚠️ Attention: Sans sécurité, N'IMPORTE QUI avec le lien peut entrer dans la réunion.
+                Ne partagez le lien qu'avec les personnes de confiance.
+            </p>
+        </div>
+
+        <div class="mt-8 text-center space-y-4">
+            <a href="https://meet.google.com" target="_blank"
+               class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold px-8 py-4 rounded-xl text-lg hover:shadow-xl transition-all transform hover:scale-105">
+                <i class="fas fa-video text-2xl"></i>
+                Créer ma Réunion Meet Ouverte
+            </a>
+            
+            <div class="mt-6">
+                <a href="{{ path('app_session_index') }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    <i class="fas fa-arrow-left"></i> Retour aux sessions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

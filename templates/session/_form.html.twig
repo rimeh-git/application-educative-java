@@ -1,4 +1,72 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'id': 'session-form', 'class': 'space-y-0'}}) }}
+
+<div class="grid grid-cols-1 gap-6">
+
+    <div class="space-y-5">
+
+        {# Date & Durée #}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i class="fas fa-calendar text-indigo-500"></i> Planification
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>{{ form_row(form.dateHeure) }}</div>
+                <div>{{ form_row(form.duree) }}</div>
+            </div>
+        </div>
+
+        {# Type & Statut & Agitation #}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i class="fas fa-stethoscope text-indigo-500"></i> Informations cliniques
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>{{ form_row(form.type) }}</div>
+                <div>{{ form_row(form.statut) }}</div>
+                <div>{{ form_row(form.niveauAgitation) }}</div>
+            </div>
+        </div>
+
+        {# Technique & Objectif & Notes #}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i class="fas fa-notes-medical text-indigo-500"></i> Détails thérapeutiques
+            </h3>
+            <div class="space-y-4">
+                {{ form_row(form.techniqueUtilisee) }}
+                {{ form_row(form.objectifSeance) }}
+                {{ form_row(form.notes) }}
+            </div>
+        </div>
+
+        {# Contact responsable #}
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i class="fas fa-user text-indigo-500"></i> Responsable / Parent
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>{{ form_row(form.nomResponsable) }}</div>
+                <div>{{ form_row(form.telephoneResponsable) }}</div>
+                <div>{{ form_row(form.parentEmail) }}</div>
+            </div>
+        </div>
+
+        {# Boutons #}
+        <div class="flex gap-3">
+            <button type="submit"
+                class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-200">
+                <i class="fas fa-save"></i> {{ button_label|default('Enregistrer') }}
+            </button>
+            <a href="{{ path('app_session_index') }}"
+                class="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl font-semibold hover:bg-slate-50 transition">
+                Annuler
+            </a>
+        </div>
+    </div>
+
+    </div>
+</div>
+
 {{ form_end(form) }}
+
+

@@ -1,0 +1,71 @@
+Note: Using configuration file C:\Users\chaba\OneDrive\Bureau\pi\phpstan.neon.
+  0/43 [>---------------------------]   0%[1G[2K 43/43 [============================] 100%
+
+ ------ ---------------------------------------------------------------- 
+  Line   Controller\SessionController.php                                
+ ------ ---------------------------------------------------------------- 
+  74     Cannot access offset 'id' on array<string, mixed>|bool|string.  
+         🪪  offsetAccess.nonOffsetAccessible                            
+  97     Expression on left side of ?? is not nullable.                  
+         🪪  nullCoalesce.expr                                           
+ ------ ---------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------------------------ 
+  Line   Entity\Notification.php                                                                               
+ ------ ------------------------------------------------------------------------------------------------------ 
+  38     Property App\Entity\Notification::$metadata type has no value type specified in iterable type array.  
+         🪪  missingType.iterableValue                                                                         
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type            
+ ------ ------------------------------------------------------------------------------------------------------ 
+
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  Line   Entity\Patient.php                                                                                             
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  54     Property App\Entity\Patient::$sessions with generic interface Doctrine\Common\Collections\Collection does not  
+         specify its types: TKey, T                                                                                     
+         🪪  missingType.generics                                                                                       
+ ------ --------------------------------------------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  Line   Entity\Session.php                                                                                             
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  62     Property App\Entity\Session::$suiviProgressions with generic interface Doctrine\Common\Collections\Collection  
+         does not specify its types: TKey, T                                                                            
+         🪪  missingType.generics                                                                                       
+ ------ --------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   Service\ProgressReportEmailService.php                                                
+ ------ -------------------------------------------------------------------------------------- 
+  117    Parameter #1 $string of function htmlspecialchars expects string, string|null given.  
+         🪪  argument.type                                                                     
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Service\RisqueAbandonService.php                                                                              
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  23     Method App\Service\RisqueAbandonService::analyser() return type has no value type specified in iterable type  
+         array.                                                                                                        
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+  188    Method App\Service\RisqueAbandonService::genererRecommandations() return type has no value type specified in  
+         iterable type array.                                                                                          
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+  201    Method App\Service\RisqueAbandonService::calculerStatistiques() return type has no value type specified in    
+         iterable type array.                                                                                          
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Service\TwilioService.php                                                                                     
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  105    Method App\Service\TwilioService::notifierSession() return type has no value type specified in iterable type  
+         array.                                                                                                        
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ [ERROR] Found 10 errors                                                                                               
+

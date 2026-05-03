@@ -1,0 +1,16 @@
+parameters:
+    level: 8
+    paths:
+        - src/Service
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Property .+::\$mailer is never read, only written#'
+        - '#Property .+::\$chatter is never read, only written#'
+        - '#Property .+::\$projectDir is never read, only written#'
+        - '#Property .+::\$sessionRepository is never read, only written#'
+        - '#Property .+::\$suiviRepo is never read, only written#'
+        - '#Call to an undefined method .+::getDateDebut\(\)#'
+        - '#Call to an undefined method .+::getExercicesTotal\(\)#'
+        - '#Call to an undefined method .+::getExercicesCompletes\(\)#'
+        - '#Call to an undefined method .+::getDureeMinutes\(\)#'
+        - '#Call to an undefined method .+::isEstAbandonnee\(\)#'

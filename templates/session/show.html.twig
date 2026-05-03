@@ -4,7 +4,6 @@
 
 {% block body %}
 <div class="max-w-6xl mx-auto fade-in">
-    {# Breadcrumb #}
     <nav class="flex items-center gap-2 text-sm text-gray-500 mb-6">
         <a href="{{ path('app_session_index') }}" class="hover:text-indigo-600 flex items-center gap-1">
             <i class="fas fa-home"></i> Accueil
@@ -16,8 +15,10 @@
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
         {# Main Content #}
         <div class="lg:col-span-2 space-y-6">
+
             {# Info Card #}
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-white flex justify-between items-center">
@@ -25,11 +26,10 @@
                         <i class="fas fa-info-circle"></i>
                         Informations Générales
                     </h2>
-                    <span class="badge-modern bg-white/20 text-white border-0">
+                    <span class="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
                         {{ session.statut }}
                     </span>
                 </div>
-                
                 <div class="p-6">
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div class="bg-gray-50 rounded-xl p-4">
@@ -52,7 +52,10 @@
                         <div class="bg-gray-50 rounded-xl p-4">
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Agitation</span>
                             <p class="mt-1">
-                                <span class="badge-modern {{ session.niveauAgitation == 'CALME' ? 'bg-emerald-100 text-emerald-700' : session.niveauAgitation == 'AGITE' ? 'bg-orange-100 text-orange-700' : 'bg-rose-100 text-rose-700' }}">
+                                <span class="px-2 py-1 rounded-full text-xs font-bold
+                                    {{ session.niveauAgitation == 'CALME' ? 'bg-emerald-100 text-emerald-700' :
+                                       session.niveauAgitation == 'AGITE' ? 'bg-orange-100 text-orange-700' :
+                                                                             'bg-rose-100 text-rose-700' }}">
                                     {{ session.niveauAgitation }}
                                 </span>
                             </p>
@@ -62,9 +65,7 @@
                     {% if session.techniqueUtilisee %}
                     <div class="mb-4">
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Technique Utilisée</span>
-                        <p class="mt-2 bg-indigo-50 text-indigo-800 p-3 rounded-lg font-medium">
-                            {{ session.techniqueUtilisee }}
-                        </p>
+                        <p class="mt-2 bg-indigo-50 text-indigo-800 p-3 rounded-lg font-medium">{{ session.techniqueUtilisee }}</p>
                     </div>
                     {% endif %}
 
@@ -88,23 +89,94 @@
                 </div>
             </div>
 
+            {# Rating Card #}
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-pink-500 to-rose-500 px-6 py-4 text-white">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-thumbs-up"></i> Évaluation de la Session
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">Que pensez-vous de cette session ?</p>
+                    <div class="flex gap-3 mb-5">
+                        <button id="btn-like" onclick="submitRating(1)"
+                            class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold border-2 transition-all border-green-400 text-green-600 hover:bg-green-500 hover:text-white">
+                            <i class="fas fa-thumbs-up"></i> J'aime
+                            <span id="count-like" class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">0</span>
+                        </button>
+                        <button id="btn-dislike" onclick="submitRating(-1)"
+                            class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold border-2 transition-all border-red-400 text-red-600 hover:bg-red-500 hover:text-white">
+                            <i class="fas fa-thumbs-down"></i> Je n'aime pas
+                            <span id="count-dislike" class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full">0</span>
+                        </button>
+                    </div>
+                    <div id="satisfaction-bar" class="hidden">
+                        <div class="flex justify-between text-xs text-gray-500 mb-1">
+                            <span>Taux de satisfaction</span>
+                            <span id="satisfaction-pct" class="font-bold text-green-600"></span>
+                        </div>
+                        <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div id="satisfaction-fill" class="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-700" style="width:0%"></div>
+                        </div>
+                        <p id="vote-msg" class="text-xs text-gray-400 mt-2"></p>
+                    </div>
+                    <p id="no-votes-msg" class="text-sm text-gray-400">Soyez le premier à évaluer cette session !</p>
+                </div>
+            </div>
+
+            {# Feedback Thérapeute Card #}
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-4 text-white">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-comment-medical"></i> Feedback Thérapeute
+                    </h2>
+                </div>
+                <div class="p-6">
+                    {% if session.hasFeedback %}
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user-md text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm text-gray-700 leading-relaxed">{{ session.feedbackTherapeute }}</p>
+                                    <p class="text-xs text-blue-400 mt-2"><i class="fas fa-clock"></i> {{ session.feedbackAt|date('d/m/Y à H:i') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <form method="post" action="{{ path('app_qr_feedback', {id: session.id}) }}">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ session.hasFeedback ? 'Modifier le feedback' : 'Ajouter un feedback' }}
+                        </label>
+                        <textarea name="feedback" rows="4" 
+                                  class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                  placeholder="Laissez un message pour l'enfant ou les parents..." 
+                                  required>{{ session.feedbackTherapeute }}</textarea>
+                        <button type="submit" 
+                                class="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-all hover:shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            {{ session.hasFeedback ? 'Mettre à jour' : 'Envoyer le feedback' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             {# Suivis Card #}
             {% if session.suiviProgressions|length > 0 %}
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4 text-white flex justify-between items-center">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4 text-white">
                     <h2 class="text-xl font-bold flex items-center gap-2">
                         <i class="fas fa-chart-line"></i>
                         Rapports de Suivi ({{ session.suiviProgressions|length }})
                     </h2>
                 </div>
-                
                 <div class="p-6 space-y-4">
                     {% for suivi in session.suiviProgressions %}
                     <div class="border border-gray-200 rounded-xl p-4 hover:shadow-md transition bg-gradient-to-r from-white to-gray-50">
                         <div class="flex justify-between items-start mb-3">
-                            <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold">
-                                {{ suivi.domaine }}
-                            </span>
+                            <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold">{{ suivi.domaine }}</span>
                             <div class="flex gap-2">
                                 <a href="{{ path('app_suivi_progression_show', {'id': suivi.id}) }}" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 flex items-center justify-center transition">
                                     <i class="fas fa-eye text-sm"></i>
@@ -114,7 +186,6 @@
                                 </a>
                             </div>
                         </div>
-                        
                         <div class="grid grid-cols-3 gap-4 mb-3 text-center">
                             <div class="bg-white rounded-lg p-3 shadow-sm">
                                 <span class="text-xs text-gray-500 block mb-1">Avant</span>
@@ -131,7 +202,6 @@
                                 </div>
                             </div>
                         </div>
-                        
                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-1000" style="width: {{ (suivi.scoreApres / 10) * 100 }}%"></div>
                         </div>
@@ -140,27 +210,107 @@
                 </div>
             </div>
             {% endif %}
+
         </div>
 
         {# Sidebar #}
         <div class="space-y-4">
+
+            {# Google Meet Card #}
+            {% if session.meetLink %}
+            <div class="bg-white rounded-2xl shadow-lg border border-blue-100 p-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-video text-blue-500"></i> Google Meet
+                </h3>
+                
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-4 text-center mb-3">
+                    <p class="text-white text-xs font-semibold mb-3 opacity-90">Rejoindre la visioconférence</p>
+                    <a href="{{ session.meetLink }}" target="_blank"
+                       class="inline-flex items-center gap-2 bg-white text-blue-700 font-bold px-4 py-2 rounded-lg text-sm hover:bg-blue-50 transition">
+                        <i class="fas fa-video"></i> Rejoindre Meet
+                    </a>
+                </div>
+                <p class="text-xs text-gray-400 break-all text-center">{{ session.meetLink }}</p>
+            </div>
+            {% endif %}
+
+            {# QR Code Card #}
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-qrcode text-indigo-500"></i> QR Code Présence
+                </h3>
+                {% if session.isPresenceConfirmee %}
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-4 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-emerald-500"></i>
+                    <div>
+                        <p class="text-xs font-bold text-emerald-700">Présence confirmée</p>
+                        <p class="text-xs text-emerald-600">{{ session.presenceConfirmeeAt|date('d/m/Y à H:i') }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 flex items-center gap-2">
+                    <i class="fas fa-clock text-amber-500"></i>
+                    <p class="text-xs font-semibold text-amber-700">En attente de scan</p>
+                </div>
+                {% endif %}
+                <div class="flex justify-center mb-4">
+                    <img src="{{ path('app_qr_image', {id: session.id}) }}"
+                         alt="QR Code Session #{{ session.id }}"
+                         class="w-40 h-40 rounded-xl border border-gray-200 shadow-sm">
+                </div>
+                <p class="text-xs text-center text-gray-400 mb-4">Le patient scanne ce QR pour confirmer sa présence</p>
+                
+                {# Bouton pour voir le feedback (toujours visible) #}
+                <a href="{{ path('app_qr_demo', {id: session.id}) }}"
+                   class="block w-full py-2 mb-2 bg-blue-500 text-white hover:bg-blue-600 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+                    <i class="fas fa-eye"></i> Voir le Feedback
+                </a>
+                
+                {% if session.isPresenceConfirmee %}
+                <form method="post" action="{{ path('app_qr_reset', {id: session.id}) }}"
+                      onsubmit="return confirm('Réinitialiser la confirmation ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('qr_reset' ~ session.id) }}">
+                    <button class="w-full py-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+                        <i class="fas fa-redo"></i> Réinitialiser
+                    </button>
+                </form>
+                {% else %}
+                <a href="{{ path('app_qr_demo', {id: session.id}) }}"
+                   class="block w-full py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 border border-indigo-200">
+                    <i class="fas fa-mobile-alt"></i> Simuler le scan
+                </a>
+                {% endif %}
+            </div>
+
             {# Actions Card #}
             <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
                 <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-cogs text-gray-400"></i> Actions
                 </h3>
                 <div class="space-y-3">
-                    <a href="{{ path('app_session_edit', {'id': session.id}) }}" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg">
+
+                    {# Bouton Favori #}
+                    <button id="btn-favori" onclick="toggleFavori()"
+                            class="w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm transition-all
+                                {{ session.isFavori ? 'bg-amber-400 text-white hover:bg-amber-500 shadow-md' : 'bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100' }}">
+                        <span id="favori-icon" class="text-lg">{{ session.isFavori ? '⭐' : '☆' }}</span>
+                        <span id="favori-label">{{ session.isFavori ? 'Retirer des favoris' : 'Marquer comme favori' }}</span>
+                    </button>
+
+                    <a href="{{ path('app_session_edit', {'id': session.id}) }}"
+                       class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg">
                         <i class="fas fa-edit"></i> Modifier Session
                     </a>
-                    
+
                     {% if session.statut == 'TERMINEE' %}
-                    <a href="{{ path('app_suivi_progression_new') }}" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg">
+                    <a href="{{ path('app_suivi_progression_new') }}"
+                       class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg">
                         <i class="fas fa-plus-circle"></i> Nouveau Suivi
                     </a>
                     {% endif %}
-                    
-                    <form method="post" action="{{ path('app_session_delete', {'id': session.id}) }}" onsubmit="return confirm('Supprimer définitivement ?');">
+
+                    <form method="post" action="{{ path('app_session_delete', {'id': session.id}) }}"
+                          onsubmit="return confirm('Supprimer définitivement ?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ session.id) }}">
                         <button class="w-full bg-rose-50 text-rose-600 hover:bg-rose-100 py-3 rounded-xl flex items-center justify-center gap-2 transition-all">
                             <i class="fas fa-trash-alt"></i> Supprimer
@@ -174,14 +324,12 @@
                 <h3 class="font-bold mb-4 opacity-90">Statistiques</h3>
                 <div class="text-4xl font-bold mb-1">{{ session.suiviProgressions|length }}</div>
                 <div class="text-indigo-100 text-sm mb-4">Rapports de suivi</div>
-                
                 {% if session.suiviProgressions|length > 0 %}
                     {% set totalProgression = 0 %}
                     {% for suivi in session.suiviProgressions %}
                         {% set totalProgression = totalProgression + suivi.progression %}
                     {% endfor %}
                     {% set avgProgression = totalProgression / session.suiviProgressions|length %}
-                    
                     <div class="border-t border-white/20 pt-4">
                         <div class="text-sm opacity-90">Progression moyenne</div>
                         <div class="text-2xl font-bold {{ avgProgression > 0 ? 'text-emerald-300' : 'text-rose-300' }}">
@@ -205,7 +353,65 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<script>
+var favoriUrl = '{{ path('app_session_favori', {id: session.id}) }}';
+
+function toggleFavori() {
+    fetch(favoriUrl, { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var btn   = document.getElementById('btn-favori');
+            var icon  = document.getElementById('favori-icon');
+            var label = document.getElementById('favori-label');
+            icon.textContent  = data.favori ? '⭐' : '☆';
+            label.textContent = data.favori ? 'Retirer des favoris' : 'Marquer comme favori';
+            if (data.favori) {
+                btn.className = 'w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm transition-all bg-amber-400 text-white hover:bg-amber-500 shadow-md';
+            } else {
+                btn.className = 'w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm transition-all bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100';
+            }
+        });
+}
+
+var rateUrl  = '{{ path('app_rating_rate', {'id': session.id}) }}';
+var statsUrl = '{{ path('app_rating_stats', {'id': session.id}) }}';
+
+function renderStats(data) {
+    document.getElementById('count-like').textContent    = data.likes;
+    document.getElementById('count-dislike').textContent = data.dislikes;
+    var noVotes = document.getElementById('no-votes-msg');
+    var bar     = document.getElementById('satisfaction-bar');
+    if (data.total > 0) {
+        noVotes.classList.add('hidden');
+        bar.classList.remove('hidden');
+        document.getElementById('satisfaction-pct').textContent  = data.satisfaction + '%';
+        document.getElementById('satisfaction-fill').style.width = data.satisfaction + '%';
+        document.getElementById('vote-msg').textContent = data.total + ' évaluation' + (data.total > 1 ? 's' : '');
+    } else {
+        noVotes.classList.remove('hidden');
+        bar.classList.add('hidden');
+    }
+    var btnLike    = document.getElementById('btn-like');
+    var btnDislike = document.getElementById('btn-dislike');
+    btnLike.classList.toggle('bg-green-500',  data.userVote === 1);
+    btnLike.classList.toggle('text-white',    data.userVote === 1);
+    btnDislike.classList.toggle('bg-red-500', data.userVote === -1);
+    btnDislike.classList.toggle('text-white', data.userVote === -1);
+}
+
+function submitRating(value) {
+    var fd = new FormData();
+    fd.append('rating', value);
+    fetch(rateUrl, { method: 'POST', body: fd })
+        .then(function(r) { return r.json(); })
+        .then(renderStats);
+}
+
+fetch(statsUrl).then(function(r) { return r.json(); }).then(renderStats);
+</script>
 {% endblock %}

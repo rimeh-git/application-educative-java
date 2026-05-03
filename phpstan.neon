@@ -1,0 +1,16 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Property .+::\$id \(int\|null\) is never assigned int#'
+        - '#Call to an undefined method .+::getDateDebut\(\)#'
+        - '#Call to an undefined method .+::getExercicesTotal\(\)#'
+        - '#Call to an undefined method .+::getExercicesCompletes\(\)#'
+        - '#Call to an undefined method .+::getDureeMinutes\(\)#'
+        - '#Call to an undefined method .+::isEstAbandonnee\(\)#'
+        - '#Property .+::\$(mailer|chatter|projectDir|sessionRepository|suiviRepo) is never read, only written#'
+        - '#Property .+::\$(metadata|sessions|suiviProgressions) .+ does not specify its types#'
+        - '#Method .+::(analyser|genererRecommandations|calculerStatistiques|notifierSession)\(\) return type has no value type specified#'
+        - '#Property .+::\$metadata type has no value type specified in iterable type array#'

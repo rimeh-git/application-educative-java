@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test du Système d'Émotions{% endblock %}
+
+{% block body %}
+<style>
+    .test-container {
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .test-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .test-card h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+    .test-link {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        margin: 5px;
+        transition: all 0.3s;
+    }
+    .test-link:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+    }
+    .success-msg {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="test-container">
+    <h1>🧪 Test du Système de Suivi des Émotions</h1>
+    
+    <div class="test-card">
+        <h2>📊 Dashboard</h2>
+        <p>Afficher les statistiques des émotions et les derniers enregistrements</p>
+        <a href="{{ path('mood_dashboard') }}" class="test-link">Ouvrir le Dashboard</a>
+    </div>
+    
+    <div class="test-card">
+        <h2>🔗 QR Codes</h2>
+        <p>Générer des QR codes pour tous les patients</p>
+        <a href="{{ path('mood_qr_codes') }}" class="test-link">Afficher les QR Codes</a>
+    </div>
+    
+    <div class="test-card">
+        <h2>😊 Tester la Sélection d'Émotion</h2>
+        <p>Essayer le système avec le premier patient de la base</p>
+        {% if firstPatient %}
+            <a href="{{ path('mood_select', {patientId: firstPatient.id}) }}" class="test-link">
+                Tester avec {{ firstPatient.prenom }}
+            </a>
+        {% else %}
+            <p style="color: red;">⚠️ Aucun patient dans la base de données</p>
+        {% endif %}
+    </div>
+    
+    <div class="success-msg">
+        ✅ Le système est prêt à l'emploi !
+        <br><br>
+        <strong>Prochaines étapes :</strong>
+        <ol>
+            <li>Aller à la page QR Codes</li>
+            <li>Imprimer un QR code pour chaque enfant</li>
+            <li>Laisser les enfants scanner le code quotidiennement</li>
+            <li>Surveiller les résultats dans le Dashboard</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

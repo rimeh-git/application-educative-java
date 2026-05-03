@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rapport de Progression - {{ suivi.session.nomResponsable }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    @media print {
+        body { background: white !important; }
+        .no-print { display: none !important; }
+        .print-break { page-break-after: always; }
+    }
+
+    body {
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #333;
+        background: white;
+    }
+
+    .report-header {
+        text-align: center;
+        border-bottom: 2px solid #4F46E5;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+
+    .report-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4F46E5;
+        margin-bottom: 10px;
+    }
+
+    .report-subtitle {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: #fafafa;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4F46E5;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 5px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #666;
+        font-size: 12px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        color: #333;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4F46E5, #7C3AED);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .recommendations {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 20px;
+    }
+
+    .recommendations-title {
+        font-weight: bold;
+        color: #92400e;
+        margin-bottom: 10px;
+    }
+
+    .recommendations-list {
+        color: #92400e;
+        padding-left: 20px;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+        color: #666;
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-8 py-6 max-w-4xl">
+
+    <!-- Header -->
+    <div class="report-header">
+        <div class="report-title">📊 Rapport de Progression Thérapeutique</div>
+        <div class="report-subtitle">Centre TSA Thérapie</div>
+        <div class="text-sm text-gray-600 mt-2">
+            Généré le {{ "now"|date("d/m/Y à H:i") }}
+        </div>
+    </div>
+
+    <!-- Informations Générales -->
+    <div class="section">
+        <div class="section-title">📋 Informations Générales</div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Patient</div>
+                <div class="info-value">{{ suivi.session.nomResponsable ?: 'Non spécifié' }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Date de la Session</div>
+                <div class="info-value">{{ suivi.session.dateHeure|date('d/m/Y') }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Heure de la Session</div>
+                <div class="info-value">{{ suivi.session.dateHeure|date('H:i') }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Durée</div>
+                <div class="info-value">{{ suivi.session.duree }} minutes</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Type de Thérapie</div>
+                <div class="info-value">{{ suivi.session.type ?: 'Non spécifié' }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Thérapeute</div>
+                <div class="info-value">{{ suivi.session.nomResponsable ?: 'Non spécifié' }}</div>
+            </div>
+        </div>
+
+        {% if suivi.session.objectifSeance %}
+        <div class="info-item" style="grid-column: 1 / -1;">
+            <div class="info-label">Objectif de la Séance</div>
+            <div class="info-value">{{ suivi.session.objectifSeance }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Évaluation de Progression -->
+    <div class="section">
+        <div class="section-title">📈 Évaluation de la Progression</div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Domaine Évalué</div>
+                <div class="info-value">{{ suivi.domaine ?: 'Non spécifié' }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Date d'Évaluation</div>
+                <div class="info-value">{{ suivi.dateEvaluation|date('d/m/Y') }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Score Avant</div>
+                <div class="info-value">{{ suivi.scoreAvant }}/10</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Score Après</div>
+                <div class="info-value">{{ suivi.scoreApres }}/10</div>
+            </div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-gray-700">Progression Réalisée</span>
+                <span class="text-sm font-bold text-indigo-600">
+                    +{{ (suivi.scoreApres - suivi.scoreAvant) }} points
+                </span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ (suivi.scoreApres / 10) * 100 }}%"></div>
+            </div>
+            <div class="text-xs text-gray-500 text-center mt-1">
+                Score final: {{ suivi.scoreApres }}/10
+            </div>
+        </div>
+
+        {% if suivi.comportementsObserves %}
+        <div class="info-item" style="grid-column: 1 / -1;">
+            <div class="info-label">Commentaires du Thérapeute</div>
+            <div class="info-value">{{ suivi.comportementsObserves }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recommandations -->
+    <div class="recommendations">
+        <div class="recommendations-title">💡 Recommandations pour la Prochaine Séance</div>
+        <div class="recommendations-list">
+            {% set progression = (suivi.scoreApres - suivi.scoreAvant) %}
+            {% if progression > 2 %}
+            <li>Excellente progression ! Continuer sur cette lancée.</li>
+            <li>Renforcer les acquis avec des exercices supplémentaires à la maison.</li>
+            {% elseif progression > 0 %}
+            <li>Bonne évolution. Poursuivre les exercices actuels.</li>
+            <li>Augmenter légèrement la difficulté des tâches.</li>
+            {% else %}
+            <li>Stabilisation des compétences. Revoir la méthodologie d'approche.</li>
+            <li>Adapter les exercices au niveau actuel de l'enfant.</li>
+            {% endif %}
+            <li>Continuer le suivi régulier pour optimiser les progrès.</li>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p><strong>Centre TSA Thérapie</strong></p>
+        <p>Rapport généré automatiquement le {{ "now"|date("d/m/Y à H:i") }}</p>
+        <p>Ce document est confidentiel et destiné au suivi thérapeutique.</p>
+    </div>
+</div>
+
+<!-- Bouton d'impression (masqué à l'impression) -->
+<div class="no-print text-center mt-8">
+    <button onclick="window.print()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
+        🖨️ Imprimer ce Rapport
+    </button>
+</div>
+{% endblock %}

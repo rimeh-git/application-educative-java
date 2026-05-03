@@ -1,0 +1,164 @@
+{# templates/chatbot/_widget.html.twig #}
+
+{# ── Floating button ── #}
+<button id="chat-toggle"
+    onclick="toggleChat()"
+    class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110"
+    title="Assistant IA Thérapeutique">
+    <i id="chat-icon" class="fas fa-brain text-xl"></i>
+</button>
+
+{# ── Chat window ── #}
+<div id="chat-window"
+    class="fixed bottom-24 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden"
+    style="height:460px">
+
+    {# Header #}
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-white">
+            <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-brain text-sm"></i>
+            </div>
+            <div>
+                <p class="text-sm font-bold">Assistant IA Thérapeutique</p>
+                <p class="text-xs text-indigo-200 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span> En ligne
+                </p>
+            </div>
+        </div>
+        <button onclick="toggleChat()" class="text-white/70 hover:text-white transition">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    {# Messages #}
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+        <div class="flex gap-2">
+            <div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <i class="fas fa-brain text-indigo-600 text-xs"></i>
+            </div>
+            <div class="bg-white rounded-2xl rounded-tl-none px-3 py-2 shadow-sm text-sm text-gray-700 max-w-[85%]">
+                Bonjour ! 👋 Je suis votre <strong>Assistant IA Thérapeutique TSA</strong>.<br><br>
+Je peux vous conseiller sur le comportement, la communication, le sommeil, et bien plus encore.<br><br>
+Comment puis-je vous aider aujourd'hui ?
+            </div>
+        </div>
+    </div>
+
+    {# Quick suggestions #}
+    <div id="suggestions" class="px-3 py-2 flex gap-1.5 overflow-x-auto bg-white border-t border-gray-100">
+        <button onclick="sendSuggestion('anxiété')"    class="suggestion-btn">😰 Anxiété</button>
+        <button onclick="sendSuggestion('comportement')" class="suggestion-btn">🧠 Comportement</button>
+        <button onclick="sendSuggestion('sommeil')"    class="suggestion-btn">😴 Sommeil</button>
+        <button onclick="sendSuggestion('routine')"    class="suggestion-btn">📅 Routine</button>
+    </div>
+
+    {# Input #}
+    <div class="px-3 py-3 bg-white border-t border-gray-100 flex gap-2">
+        <input id="chat-input" type="text"
+            placeholder="Posez votre question..."
+            class="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            onkeydown="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()"
+            class="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl flex items-center justify-center transition flex-shrink-0">
+            <i class="fas fa-paper-plane text-xs"></i>
+        </button>
+    </div>
+</div>
+
+<style>
+.suggestion-btn {
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #e0e7ff;
+    background: #eef2ff;
+    color: #4f46e5;
+    cursor: pointer;
+    transition: background .2s;
+}
+.suggestion-btn:hover { background: #c7d2fe; }
+</style>
+
+<script>
+const chatUrl = '{{ path('app_assistant_ia_message') }}';
+
+function toggleChat() {
+    const win  = document.getElementById('chat-window');
+    const icon = document.getElementById('chat-icon');
+    const hidden = win.classList.toggle('hidden');
+    icon.className = hidden ? 'fas fa-brain text-xl' : 'fas fa-times text-xl';
+    if (!hidden) document.getElementById('chat-input').focus();
+}
+
+function appendMessage(text, isUser) {
+    const box = document.getElementById('chat-messages');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex gap-2' + (isUser ? ' justify-end' : '');
+
+    const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+
+    if (!isUser) {
+        wrapper.innerHTML = `
+            <div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                <i class="fas fa-brain text-indigo-600 text-xs"></i>
+            </div>
+            <div class="bg-white rounded-2xl rounded-tl-none px-3 py-2 shadow-sm text-sm text-gray-700 max-w-[85%]">${formatted}</div>`;
+    } else {
+        wrapper.innerHTML = `
+            <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-3 py-2 text-sm max-w-[85%]">${formatted}</div>`;
+    }
+
+    box.appendChild(wrapper);
+    box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+    const box = document.getElementById('chat-messages');
+    const el = document.createElement('div');
+    el.id = 'typing-indicator';
+    el.className = 'flex gap-2';
+    el.innerHTML = `
+        <div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-brain text-indigo-600 text-xs"></i>
+        </div>
+        <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm">
+            <div class="flex gap-1 items-center">
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0ms"></span>
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:150ms"></span>
+                <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:300ms"></span>
+            </div>
+        </div>`;
+    box.appendChild(el);
+    box.scrollTop = box.scrollHeight;
+}
+
+function hideTyping() {
+    document.getElementById('typing-indicator')?.remove();
+}
+
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    appendMessage(text, true);
+    input.value = '';
+    document.getElementById('suggestions').classList.add('hidden');
+    showTyping();
+
+    const fd = new FormData();
+    fd.append('message', text);
+
+    fetch(chatUrl, { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => { hideTyping(); appendMessage(data.reply, false); })
+        .catch(() => { hideTyping(); appendMessage("Erreur de connexion. Réessayez.", false); });
+}
+
+function sendSuggestion(topic) {
+    document.getElementById('chat-input').value = topic;
+    sendMessage();
+}
+</script>

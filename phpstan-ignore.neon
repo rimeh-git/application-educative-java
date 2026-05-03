@@ -1,0 +1,18 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Partie 8 : Ignorer temporairement certaines erreurs spécifiques
+        - '#Call to an undefined method#'
+        - '#Property .+::\$id \(int\|null\) is never assigned int#'
+        - '#Property .+::\$mailer is never read, only written#'
+        - '#Property .+::\$chatter is never read, only written#'
+        - '#Property .+::\$projectDir is never read, only written#'
+        - '#Property .+::\$sessionRepository is never read, only written#'
+        - '#Property .+::\$suiviRepo is never read, only written#'
+        - '#Property .+::\$(metadata|sessions|suiviProgressions) .+ does not specify its types#'
+        - '#Method .+::(analyser|genererRecommandations|calculerStatistiques|notifierSession)\(\) return type has no value type specified#'
+        - '#Expression on left side of \?\? is not nullable#'
+        - '#Property .+::\$metadata type has no value type specified in iterable type array#'

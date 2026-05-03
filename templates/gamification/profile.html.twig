@@ -1,0 +1,282 @@
+{% extends 'base.html.twig' %}
+{% block title %}Gamification — TSA Thérapie{% endblock %}
+
+{% block body %}
+<div class="fade-in space-y-6">
+
+    {# ── HEADER ── #}
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-800 flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-trophy text-white"></i>
+                </div>
+                Gamification & Récompenses
+            </h1>
+            <p class="text-slate-500 mt-1 text-sm">Points de présence + badges de progression</p>
+        </div>
+        <a href="{{ path('app_suivi_progression_new') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
+            <i class="fas fa-plus"></i> Nouveau suivi
+        </a>
+    </div>
+
+    {# ── KPIs ── #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-5 border border-amber-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-2xl">⭐</div>
+                <div>
+                    <p class="text-2xl font-black text-amber-500">{{ xpTotal }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">XP Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-2xl">🏆</div>
+                <div>
+                    <p class="text-2xl font-black text-emerald-600">{{ data.earned|length }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Badges</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-indigo-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl">📋</div>
+                <div>
+                    <p class="text-2xl font-black text-indigo-600">{{ data.timeline|length }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Suivis</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-violet-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center text-2xl">📱</div>
+                <div>
+                    <p class="text-2xl font-black text-violet-600">{{ nbConfirmees }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Présences QR</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {# ── COLONNE GAUCHE : Niveau + QR ── #}
+        <div class="space-y-5">
+
+            {# Niveau progression #}
+            <div class="bg-gradient-to-br from-{{ level.color }}-600 to-{{ level.color }}-400 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                <div class="relative z-10">
+                    <p class="text-xs font-bold uppercase tracking-widest opacity-80 mb-3">Niveau Progression</p>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl border-2 border-white/30">
+                            {{ level.emoji }}
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black">{{ level.name }}</h2>
+                            <p class="text-sm opacity-80">{{ xp }} XP badges</p>
+                        </div>
+                    </div>
+                    {% if level.nextName %}
+                    <p class="text-xs opacity-70 mb-2">{{ level.nextXp - xp }} XP pour <strong>{{ level.nextName }}</strong></p>
+                    {% else %}
+                    <p class="text-xs opacity-70 mb-2">🎉 Niveau maximum !</p>
+                    {% endif %}
+                    <div class="h-3 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width:{{ level.progress }}%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs opacity-60 mt-1">
+                        <span>{{ xp }} XP</span>
+                        <span>{{ level.progress }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Niveau QR présence #}
+            <div class="bg-gradient-to-br from-violet-600 to-indigo-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                <div class="relative z-10">
+                    <p class="text-xs font-bold uppercase tracking-widest opacity-80 mb-3">Niveau Présence QR</p>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center text-4xl border-2 border-white/30">
+                            {{ niveauQr.emoji }}
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black">{{ niveauQr.name }}</h2>
+                            <p class="text-sm opacity-80">{{ pointsQr }} pts présence</p>
+                        </div>
+                    </div>
+                    {% if niveauQr.nextName %}
+                    <p class="text-xs opacity-70 mb-2">{{ niveauQr.nextMin - pointsQr }} pts pour <strong>{{ niveauQr.nextName }}</strong></p>
+                    {% else %}
+                    <p class="text-xs opacity-70 mb-2">🎉 Niveau maximum !</p>
+                    {% endif %}
+                    <div class="h-3 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width:{{ niveauQr.progress }}%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs opacity-60 mt-1">
+                        <span>{{ pointsQr }} pts</span>
+                        <span>{{ niveauQr.progress }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Badges QR débloqués #}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="text-xl">📱</span> Badges Présence QR
+                    <span class="ml-auto text-xs bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded-full">
+                        {{ badgesQr|length }} / 5
+                    </span>
+                </h3>
+                {% if badgesQr|length > 0 %}
+                <div class="space-y-2">
+                    {% for badge in badgesQr %}
+                    <div class="flex items-center gap-3 p-3 rounded-xl border"
+                         style="background-color: {{ badge.color }}15; border-color: {{ badge.color }}40">
+                        <span class="text-2xl">{{ badge.icon }}</span>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-slate-800">{{ badge.name }}</p>
+                            <p class="text-xs text-slate-500">{{ badge.desc }}</p>
+                        </div>
+                        <i class="fas fa-check-circle text-emerald-500"></i>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-slate-400">
+                    <span class="text-3xl block mb-2">📱</span>
+                    <p class="text-sm">Scannez votre premier QR Code pour débloquer des badges !</p>
+                </div>
+                {% endif %}
+
+                {% if prochainBadgeQr %}
+                <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <p class="text-xs text-slate-400 mb-1">Prochain badge</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl opacity-40">{{ prochainBadgeQr.icon }}</span>
+                        <div>
+                            <p class="text-sm font-bold text-slate-600">{{ prochainBadgeQr.name }}</p>
+                            <p class="text-xs text-indigo-600 font-bold">{{ prochainBadgeQr.manque }} pts manquants</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        {# ── COLONNE DROITE : Timeline + Badges progression ── #}
+        <div class="lg:col-span-2 space-y-5">
+
+            {# Badges progression débloqués #}
+            {% if data.earned is not empty %}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-medal text-amber-500"></i> Badges Progression
+                    </h2>
+                    <span class="text-xs bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-full">
+                        {{ data.earned|length }} / {{ data.earned|length + data.locked|length }}
+                    </span>
+                </div>
+                <div class="p-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {% for badge in data.earned %}
+                    <div class="relative bg-gradient-to-br from-{{ badge.color }}-50 to-{{ badge.color }}-100
+                                border-2 border-{{ badge.color }}-200 rounded-2xl p-4 text-center
+                                hover:shadow-md hover:-translate-y-1 transition-all">
+                        <div class="absolute top-2 right-2 w-5 h-5 bg-{{ badge.color }}-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div class="text-3xl mb-2">{{ badge.icon }}</div>
+                        <div class="text-xs font-black text-{{ badge.color }}-700">{{ badge.name }}</div>
+                        <div class="text-xs text-{{ badge.color }}-500 mt-1">{{ badge.desc }}</div>
+                        <div class="mt-2 inline-flex items-center gap-1 bg-{{ badge.color }}-200 text-{{ badge.color }}-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                            +{{ badge.xp }} XP
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {# Badges verrouillés #}
+                    {% for badge in data.locked %}
+                    <div class="relative bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-4 text-center opacity-40">
+                        <div class="absolute top-2 right-2 w-5 h-5 bg-slate-300 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lock text-white text-xs"></i>
+                        </div>
+                        <div class="text-3xl mb-2 grayscale">{{ badge.icon }}</div>
+                        <div class="text-xs font-black text-slate-500">{{ badge.name }}</div>
+                        <div class="text-xs text-slate-400 mt-1">{{ badge.desc }}</div>
+                        <div class="mt-2 inline-flex items-center gap-1 bg-slate-200 text-slate-500 text-xs font-bold px-2 py-0.5 rounded-full">
+                            +{{ badge.xp }} XP
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Timeline séances #}
+            {% if data.timeline is not empty %}
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-5 py-4 border-b border-slate-100">
+                    <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-history text-indigo-500"></i> Historique des Séances
+                    </h2>
+                </div>
+                <div class="p-5 space-y-3 max-h-96 overflow-y-auto">
+                    {% for entry in data.timeline|reverse %}
+                    <div class="flex gap-3 items-start">
+                        <div class="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-sm font-black
+                            {{ entry.prog > 0 ? 'bg-emerald-100 text-emerald-700' :
+                               (entry.prog == 0 ? 'bg-slate-100 text-slate-500' : 'bg-rose-100 text-rose-600') }}">
+                            {{ entry.prog > 0 ? '+' : '' }}{{ entry.prog }}
+                        </div>
+                        <div class="flex-1 rounded-xl p-3 border text-sm
+                            {{ entry.prog > 0 ? 'bg-emerald-50 border-emerald-200' :
+                               (entry.prog == 0 ? 'bg-slate-50 border-slate-200' : 'bg-rose-50 border-rose-200') }}">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-slate-500 uppercase">{{ entry.domaine }}</span>
+                                <span class="text-xs text-slate-400">{{ entry.date ? entry.date|date('d/m/Y') : '' }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-white border border-slate-200 px-2 py-0.5 rounded text-xs font-bold text-slate-600">{{ entry.scoreAvant }}/10</span>
+                                <i class="fas fa-arrow-right text-slate-300 text-xs"></i>
+                                <span class="px-2 py-0.5 rounded text-xs font-black text-white
+                                    {{ entry.prog > 0 ? 'bg-emerald-500' : (entry.prog == 0 ? 'bg-slate-400' : 'bg-rose-500') }}">
+                                    {{ entry.scoreApres }}/10
+                                </span>
+                            </div>
+                            {% if entry.badge %}
+                            <div class="flex items-center gap-2 bg-white rounded-lg p-2 border border-{{ entry.badge.color }}-200">
+                                <span class="text-lg">{{ entry.badge.icon }}</span>
+                                <span class="text-xs font-bold text-{{ entry.badge.color }}-700">{{ entry.badge.name }}</span>
+                                <span class="ml-auto text-xs bg-{{ entry.badge.color }}-100 text-{{ entry.badge.color }}-700 font-bold px-2 py-0.5 rounded-full">+{{ entry.badge.xp }} XP</span>
+                            </div>
+                            {% else %}
+                            <p class="text-xs text-slate-600 italic bg-white rounded-lg p-2 border border-slate-100">{{ entry.motivation }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-white rounded-2xl p-12 text-center shadow-sm border border-slate-200">
+                <div class="text-5xl mb-4">🌱</div>
+                <p class="text-lg font-bold text-slate-600">Aucun suivi enregistré</p>
+                <p class="text-slate-400 mt-2 text-sm">Complétez votre première séance pour débloquer des badges !</p>
+                <a href="{{ path('app_suivi_progression_new') }}"
+                   class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition text-sm">
+                    <i class="fas fa-plus"></i> Ajouter un suivi
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

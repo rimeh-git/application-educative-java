@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}QR Codes - Suivi des Émotions{% endblock %}
+
+{% block body %}
+<style>
+    .qr-container {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .qr-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+    .qr-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .qr-card h3 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .qr-code {
+        margin: 20px 0;
+    }
+    .qr-link {
+        word-break: break-all;
+        color: #666;
+        font-size: 0.9em;
+        margin-top: 10px;
+    }
+    .print-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+    .print-btn:hover {
+        background: #5568d3;
+    }
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f1f5f9;
+        color: #334155;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    .back-btn:hover {
+        background: #e2e8f0;
+    }
+</style>
+
+<div class="qr-container">
+    <a href="{{ path('mood_dashboard') }}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Retour au Dashboard
+    </a>
+    
+    <h1>🔗 QR Codes pour les Patients</h1>
+    
+    {% if patients is empty %}
+        <div style="text-align: center; padding: 60px; background: white; border-radius: 15px; margin-top: 30px;">
+            <i class="fas fa-users" style="font-size: 4em; color: #ddd; margin-bottom: 20px;"></i>
+            <p style="color: #999; font-size: 1.2em;">Aucun patient trouvé</p>
+        </div>
+    {% else %}
+        <div class="qr-grid">
+            {% for patient in patients %}
+                <div class="qr-card">
+                    <h3>{{ patient.prenom }} {{ patient.nom }}</h3>
+                    <div class="qr-code">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ url('mood_select', {patientId: patient.id}, 'absolute') }}" alt="QR Code">
+                    </div>
+                    <div class="qr-link">
+                        {{ url('mood_select', {patientId: patient.id}, 'absolute') }}
+                    </div>
+                    <button class="print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Imprimer
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,162 @@
+Note: Using configuration file C:\Users\chaba\OneDrive\Bureau\pi\phpstan.neon.
+  0/43 [>---------------------------]   0%[1G[2K 43/43 [============================] 100%
+
+ ------ ----------------------------------------------------------------------------------------- 
+  Line   Controller\RiskDashboardController.php                                                   
+ ------ ----------------------------------------------------------------------------------------- 
+  237    Parameter #1 $string of function trim expects string, bool|float|int|string|null given.  
+         🪪  argument.type                                                                        
+ ------ ----------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------ 
+  Line   Controller\SessionController.php                
+ ------ ------------------------------------------------ 
+  97     Expression on left side of ?? is not nullable.  
+         🪪  nullCoalesce.expr                           
+ ------ ------------------------------------------------ 
+
+ ------ ------------------------------------------------------------------------------------------------------ 
+  Line   Entity\Notification.php                                                                               
+ ------ ------------------------------------------------------------------------------------------------------ 
+  39     Property App\Entity\Notification::$metadata type has no value type specified in iterable type array.  
+         🪪  missingType.iterableValue                                                                         
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type            
+ ------ ------------------------------------------------------------------------------------------------------ 
+
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  Line   Entity\Patient.php                                                                                             
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  55     Property App\Entity\Patient::$sessions with generic interface Doctrine\Common\Collections\Collection does not  
+         specify its types: TKey, T                                                                                     
+         🪪  missingType.generics                                                                                       
+ ------ --------------------------------------------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  Line   Entity\Session.php                                                                                             
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  63     Property App\Entity\Session::$suiviProgressions with generic interface Doctrine\Common\Collections\Collection  
+         does not specify its types: TKey, T                                                                            
+         🪪  missingType.generics                                                                                       
+ ------ --------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Repository\SessionRepository.php                                                                              
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  56     Method App\Repository\SessionRepository::findByFilters() return type has no value type specified in iterable  
+         type array.                                                                                                   
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Repository\SuiviProgressionRepository.php                                                                     
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  23     Method App\Repository\SuiviProgressionRepository::findByFilters() return type has no value type specified in  
+         iterable type array.                                                                                          
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------------------------------- 
+  Line   Service\AbandonPredictionService.php                                                                         
+ ------ ------------------------------------------------------------------------------------------------------------- 
+  15     Property App\Service\AbandonPredictionService::$suiviRepo is never read, only written.                       
+         🪪  property.onlyWritten                                                                                     
+         💡  See: https://phpstan.org/developing-extensions/always-read-written-properties                            
+  70     Method App\Service\AbandonPredictionService::extraireFeatures() return type has no value type specified in   
+         iterable type array.                                                                                         
+         🪪  missingType.iterableValue                                                                                
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                   
+  70     PHPDoc tag @param references unknown parameter: $f                                                           
+         🪪  parameter.notFound                                                                                       
+  156    Method App\Service\AbandonPredictionService::expliquerFacteurs() return type has no value type specified in  
+         iterable type array.                                                                                         
+         🪪  missingType.iterableValue                                                                                
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                   
+ ------ ------------------------------------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   Service\AlertService.php                                                           
+ ------ ----------------------------------------------------------------------------------- 
+  14     Property App\Service\AlertService::$mailer is never read, only written.            
+         🪪  property.onlyWritten                                                           
+         💡  See: https://phpstan.org/developing-extensions/always-read-written-properties  
+  15     Property App\Service\AlertService::$chatter is never read, only written.           
+         🪪  property.onlyWritten                                                           
+         💡  See: https://phpstan.org/developing-extensions/always-read-written-properties  
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------------------- 
+  Line   Service\EmailRappelService.php                                                     
+ ------ ----------------------------------------------------------------------------------- 
+  18     Property App\Service\EmailRappelService::$projectDir is never read, only written.  
+         🪪  property.onlyWritten                                                           
+         💡  See: https://phpstan.org/developing-extensions/always-read-written-properties  
+ ------ ----------------------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------------------------------------------------- 
+  Line   Service\GoogleCalendarService.php                                                                            
+ ------ ------------------------------------------------------------------------------------------------------------- 
+  53     Method App\Service\GoogleCalendarService::createEvent() return type has no value type specified in iterable  
+         type array.                                                                                                  
+         🪪  missingType.iterableValue                                                                                
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                   
+  77     Method App\Service\GoogleCalendarService::updateEvent() return type has no value type specified in iterable  
+         type array.                                                                                                  
+         🪪  missingType.iterableValue                                                                                
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                   
+ ------ ------------------------------------------------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  Line   Service\GoogleMeetService.php                                                                                  
+ ------ --------------------------------------------------------------------------------------------------------------- 
+  23     Comparison operation "<" between 25 and 0 is always false.                                                     
+         🪪  smaller.alwaysFalse                                                                                        
+         💡  Because the type is coming from a PHPDoc, you can turn off this check by setting treatPhpDocTypesAsCertain  
+         : false in your phpstan.neon.                                                                                  
+ ------ --------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------- 
+  Line   Service\ProgressReportEmailService.php                                                
+ ------ -------------------------------------------------------------------------------------- 
+  85     Expression on left side of ?? is not nullable.                                        
+         🪪  nullCoalesce.expr                                                                 
+  92     Expression on left side of ?? is not nullable.                                        
+         🪪  nullCoalesce.expr                                                                 
+  99     Expression on left side of ?? is not nullable.                                        
+         🪪  nullCoalesce.expr                                                                 
+  114    Parameter #1 $string of function htmlspecialchars expects string, string|null given.  
+         🪪  argument.type                                                                     
+ ------ -------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Service\RisqueAbandonService.php                                                                              
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  19     Property App\Service\RisqueAbandonService::$sessionRepository is never read, only written.                    
+         🪪  property.onlyWritten                                                                                      
+         💡  See: https://phpstan.org/developing-extensions/always-read-written-properties                             
+  23     Method App\Service\RisqueAbandonService::analyser() return type has no value type specified in iterable type  
+         array.                                                                                                        
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+  188    Method App\Service\RisqueAbandonService::genererRecommandations() return type has no value type specified in  
+         iterable type array.                                                                                          
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+  201    Method App\Service\RisqueAbandonService::calculerStatistiques() return type has no value type specified in    
+         iterable type array.                                                                                          
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  Line   Service\TwilioService.php                                                                                     
+ ------ -------------------------------------------------------------------------------------------------------------- 
+  105    Method App\Service\TwilioService::notifierSession() return type has no value type specified in iterable type  
+         array.                                                                                                        
+         🪪  missingType.iterableValue                                                                                 
+         💡  See: https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-iterable-type                    
+ ------ -------------------------------------------------------------------------------------------------------------- 
+
+ [ERROR] Found 26 errors                                                                                               
+

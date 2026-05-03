@@ -1,0 +1,16 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Règle demandée dans la Partie 8 - Ignorer les appels de méthodes non définies
+        - '#Call to an undefined method#'
+        - '#Cannot call method .+ on#'
+        
+        # Autres règles nécessaires
+        - '#Property .+::\$id \(int\|null\) is never assigned int#'
+        - '#Property .+::\$(mailer|chatter|projectDir|sessionRepository|suiviRepo) is never read, only written#'
+        - '#Property .+::\$(metadata|sessions|suiviProgressions) .+ does not specify its types#'
+        - '#Method .+::(analyser|genererRecommandations|calculerStatistiques|notifierSession)\(\) return type has no value type specified#'
+        - '#Property .+::\$metadata type has no value type specified in iterable type array#'

@@ -1,195 +1,300 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Suivis - TSA Thérapie{% endblock %}
+{% block title %}Suivis de Progression — TSA Thérapie{% endblock %}
 
 {% block body %}
-{% set suivis = suivis|default([]) %}
+<div class="fade-in space-y-6 p-6">
 
-<div class="fade-in">
-    
     {# Header #}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <span class="bg-gradient-to-br from-emerald-400 to-emerald-600 text-white p-3 rounded-2xl shadow-lg">
-                    <i class="fas fa-chart-line text-2xl"></i>
-                </span>
-                Suivis de Progression
+            <h1 class="text-3xl font-bold text-slate-900">
+                <i class="fas fa-chart-line text-emerald-600 mr-3"></i>Suivis de Progression
             </h1>
-            <p class="text-gray-500 mt-2 ml-16">Rapports d'évaluation thérapeutique</p>
+            <p class="text-slate-500 mt-1">Liste des évaluations et progressions par domaine</p>
         </div>
-        <a href="{{ path('app_suivi_progression_new') }}" 
-           class="group bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
-            <i class="fas fa-plus transition-transform group-hover:rotate-90"></i>
-            <span class="font-medium">Nouveau Suivi</span>
+        <a href="{{ path('app_suivi_progression_new') }}" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition shadow-lg shadow-emerald-200 text-sm font-medium flex items-center gap-2">
+            <i class="fas fa-plus"></i>Nouveau Suivi
         </a>
     </div>
 
-    {# Stats Cards #}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div class="bg-emerald-100 text-emerald-600 p-3 rounded-lg">
-                <i class="fas fa-chart-bar text-xl"></i>
+    {# ═══════════════════════════════════════════ #}
+    {# BARRE DE RECHERCHE + FILTRES #}
+    {# ═══════════════════════════════════════════ #}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+        <form method="get" action="{{ path('app_suivi_progression_index') }}" class="space-y-4">
+            <div class="flex flex-col md:flex-row gap-4">
+                {# Recherche texte #}
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ filters.search ?? '' }}" 
+                        placeholder="Rechercher par domaine, enfant..."
+                        class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                    >
+                </div>
+                
+                {# Filtre domaine #}
+                <div class="md:w-48">
+                    <select 
+                        name="domaine" 
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm text-slate-600"
+                    >
+                        <option value="">Tous les domaines</option>
+                        <option value="Communication" {{ (filters.domaine ?? '') == 'Communication' ? 'selected' : '' }}>Communication</option>
+                        <option value="Socialisation" {{ (filters.domaine ?? '') == 'Socialisation' ? 'selected' : '' }}>Socialisation</option>
+                        <option value="Comportement" {{ (filters.domaine ?? '') == 'Comportement' ? 'selected' : '' }}>Comportement</option>
+                        <option value="Autonomie" {{ (filters.domaine ?? '') == 'Autonomie' ? 'selected' : '' }}>Autonomie</option>
+                        <option value="Motricité" {{ (filters.domaine ?? '') == 'Motricité' ? 'selected' : '' }}>Motricité</option>
+                        <option value="Cognition" {{ (filters.domaine ?? '') == 'Cognition' ? 'selected' : '' }}>Cognition</option>
+                    </select>
+                </div>
+                
+                {# Boutons #}
+                <div class="flex gap-2">
+                    <button type="submit" class="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition text-sm font-medium flex items-center gap-2">
+                        <i class="fas fa-filter"></i>Filtrer
+                    </button>
+                    {% if filters is not empty %}
+                        <a href="{{ path('app_suivi_progression_index') }}" class="px-4 py-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition text-sm font-medium flex items-center gap-2">
+                            <i class="fas fa-times"></i>Réinitialiser
+                        </a>
+                    {% endif %}
+                </div>
             </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ suivis|length }}</p>
-                <p class="text-sm text-gray-500">Total Suivis</p>
+            
+            {# Tri #}
+            <div class="flex gap-4 items-center pt-2 border-t border-slate-100">
+                <span class="text-xs text-slate-500 font-medium">Trier par :</span>
+                <div class="flex gap-2">
+                    <select name="sortBy" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="dateEvaluation" {{ sortBy == 'dateEvaluation' ? 'selected' : '' }}>Date</option>
+                        <option value="domaine" {{ sortBy == 'domaine' ? 'selected' : '' }}>Domaine</option>
+                        <option value="scoreApres" {{ sortBy == 'scoreApres' ? 'selected' : '' }}>Score</option>
+                    </select>
+                    <select name="sortOrder" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="DESC" {{ sortOrder == 'DESC' ? 'selected' : '' }}>Décroissant</option>
+                        <option value="ASC" {{ sortOrder == 'ASC' ? 'selected' : '' }}>Croissant</option>
+                    </select>
+                </div>
+                
+                {# Limit par page #}
+                <div class="ml-auto flex items-center gap-2">
+                    <span class="text-xs text-slate-500">Afficher :</span>
+                    <select name="limit" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="10" {{ limit == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ limit == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ limit == 50 ? 'selected' : '' }}>50</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {# Stats rapides #}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                    <i class="fas fa-list text-indigo-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-slate-900">{{ totalItems ?? suiviProgressions|length }}</p>
+                    <p class="text-xs text-slate-500">Total suivis</p>
+                </div>
             </div>
         </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg">
-                <i class="fas fa-comments text-xl"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ suivis|filter(s => s.domaine == 'COMMUNICATION')|length }}</p>
-                <p class="text-sm text-gray-500">Communication</p>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <i class="fas fa-arrow-up text-emerald-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-emerald-600">
+                        {% set totalAmeliorations = 0 %}
+                        {% for s in suiviProgressions %}
+                            {% if s.scoreApres > s.scoreAvant %}
+                                {% set totalAmeliorations = totalAmeliorations + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ totalAmeliorations }}
+                    </p>
+                    <p class="text-xs text-slate-500">Améliorations</p>
+                </div>
             </div>
         </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div class="bg-purple-100 text-purple-600 p-3 rounded-lg">
-                <i class="fas fa-users text-xl"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ suivis|filter(s => s.domaine == 'SOCIALISATION')|length }}</p>
-                <p class="text-sm text-gray-500">Socialisation</p>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <i class="fas fa-star text-amber-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-amber-600">
+                        {% set totalScore = 0 %}
+                        {% set countScore = 0 %}
+                        {% for s in suiviProgressions %}
+                            {% if s.scoreApres %}
+                                {% set totalScore = totalScore + s.scoreApres %}
+                                {% set countScore = countScore + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ countScore > 0 ? (totalScore / countScore)|round(1) : 0 }}
+                    </p>
+                    <p class="text-xs text-slate-500">Score moyen</p>
+                </div>
             </div>
         </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-            <div class="bg-amber-100 text-amber-600 p-3 rounded-lg">
-                <i class="fas fa-star text-xl"></i>
-            </div>
-            <div>
-                {% set avgScore = suivis|length > 0 ? (suivis|reduce((acc, s) => acc + s.scoreApres, 0) / suivis|length) : 0 %}
-                <p class="text-2xl font-bold text-gray-900">{{ avgScore|number_format(1) }}</p>
-                <p class="text-sm text-gray-500">Score Moyen</p>
+        <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-rose-100 flex items-center justify-center">
+                    <i class="fas fa-trophy text-rose-600"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-rose-600">
+                        {% set maxProg = 0 %}
+                        {% for s in suiviProgressions %}
+                            {% set prog = s.scoreApres - s.scoreAvant %}
+                            {% if prog > maxProg %}
+                                {% set maxProg = prog %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ maxProg > 0 ? '+' ~ maxProg : 0 }}
+                    </p>
+                    <p class="text-xs text-slate-500">Meilleure prog.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    {# Table #}
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    {# Tableau des suivis — QR CODE SUPPRIMÉ #}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h2 class="text-lg font-bold text-slate-800">
+                <i class="fas fa-table text-emerald-500 mr-2"></i>Liste des suivis
+            </h2>
+            <div class="flex items-center gap-3">
+                {% if filters is not empty %}
+                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+                        <i class="fas fa-filter mr-1"></i>Filtres actifs
+                    </span>
+                {% endif %}
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
+                    {{ totalItems ?? suiviProgressions|length }} suivis
+                </span>
+            </div>
+        </div>
+        
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Session</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Domaine</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Avant</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Après</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Progression</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">ID</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Session</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Domaine</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Avant</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Après</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Prog.</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Date</th>
+                        <th class="px-4 py-3 text-center text-xs font-semibold text-slate-500 uppercase">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                {% for suivi in suivis %}
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4">
-                            <span class="font-mono text-sm font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">#{{ suivi.id }}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex flex-col">
-                                <span class="font-semibold text-gray-900">Session #{{ suivi.session.id }}</span>
-                                <span class="text-sm text-gray-500">{{ suivi.session.dateHeure|date('d/m/Y H:i') }}</span>
-                                <span class="text-xs text-gray-400">{{ suivi.session.duree }} min • {{ suivi.session.type }}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 border border-indigo-200">
-                                {{ suivi.domaine }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 text-gray-600 font-bold text-lg">
-                                {{ suivi.scoreAvant }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 font-bold text-lg">
-                                {{ suivi.scoreApres }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold {{ suivi.progression > 0 ? 'bg-emerald-100 text-emerald-700' : suivi.progression < 0 ? 'bg-rose-100 text-rose-700' : 'bg-gray-100 text-gray-700' }}">
-                                {% if suivi.progression > 0 %}
-                                    <i class="fas fa-arrow-up"></i> +{{ suivi.progression }}
-                                {% elseif suivi.progression < 0 %}
-                                    <i class="fas fa-arrow-down"></i> {{ suivi.progression }}
+                <tbody class="divide-y divide-slate-100">
+                    {% for suivi in suiviProgressions %}
+                        {% set progression = suivi.scoreApres - suivi.scoreAvant %}
+                        {% set progColor = progression > 0 ? 'text-emerald-600' : (progression < 0 ? 'text-rose-600' : 'text-slate-500') %}
+                        {% set progBg = progression > 0 ? 'bg-emerald-50' : (progression < 0 ? 'bg-rose-50' : 'bg-slate-50') %}
+                        {% set progIcon = progression > 0 ? 'fa-arrow-up' : (progression < 0 ? 'fa-arrow-down' : 'fa-minus') %}
+                        
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-4 py-3 text-sm font-medium text-slate-900">#{{ suivi.id }}</td>
+                            <td class="px-4 py-3 text-sm text-slate-700">
+                                {% if suivi.session %}
+                                    <a href="{{ path('app_session_show', {'id': suivi.session.id}) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                                        Session #{{ suivi.session.id }}
+                                    </a>
+                                    <p class="text-xs text-slate-400">{{ suivi.session.type ?? '—' }}</p>
                                 {% else %}
-                                    <i class="fas fa-minus"></i> 0
+                                    <span class="text-slate-400">—</span>
                                 {% endif %}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center text-sm text-gray-600">
-                            {{ suivi.dateEvaluation|date('d/m/Y') }}
-                        </td>
-                        
-                        {# ============ LES 3 BOUTONS CRUD (sans imprimer) ============ #}
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                
-                                {# 1. BOUTON VOIR (Bleu) #}
-                                <a href="{{ path('app_suivi_progression_show', {'id': suivi.id}) }}" 
-                                   class="group relative flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-500 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md hover:scale-110" 
-                                   title="Voir les détails">
-                                    <i class="fas fa-eye text-sm"></i>
-                                    <span class="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
-                                        Voir
-                                    </span>
-                                </a>
-
-                                {# 2. BOUTON MODIFIER (Amber) #}
-                                <a href="{{ path('app_suivi_progression_edit', {'id': suivi.id}) }}" 
-                                   class="group relative flex items-center justify-center w-10 h-10 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md hover:scale-110" 
-                                   title="Modifier le suivi">
-                                    <i class="fas fa-edit text-sm"></i>
-                                    <span class="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
-                                        Modifier
-                                    </span>
-                                </a>
-
-                                {# 3. BOUTON SUPPRIMER (Rouge) #}
-                                <form method="post" action="{{ path('app_suivi_progression_delete', {'id': suivi.id}) }}" 
-                                      class="inline" 
-                                      onsubmit="return confirm('🗑️ Êtes-vous sûr de vouloir supprimer ce suivi ?\n\nCette action est irréversible.');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ suivi.id) }}">
-                                    <button type="submit" 
-                                            class="group relative flex items-center justify-center w-10 h-10 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md hover:scale-110" 
-                                            title="Supprimer le suivi">
-                                        <i class="fas fa-trash-alt text-sm"></i>
-                                        <span class="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
-                                            Supprimer
-                                        </span>
-                                    </button>
-                                </form>
-
-                            </div>
-                        </td>
-                        {# ============ FIN DES 3 BOUTONS ============ #}
-                        
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="8" class="px-6 py-16 text-center">
-                            <div class="flex flex-col items-center text-gray-400">
-                                <div class="bg-gray-100 p-6 rounded-full mb-4">
-                                    <i class="fas fa-chart-bar text-5xl"></i>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-slate-700 font-medium">{{ suivi.domaine }}</td>
+                            <td class="px-4 py-3 text-sm text-center text-slate-600 font-semibold">{{ suivi.scoreAvant }}/10</td>
+                            <td class="px-4 py-3 text-sm text-center font-bold text-emerald-600">{{ suivi.scoreApres }}/10</td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold {{ progBg }} {{ progColor }}">
+                                    <i class="fas {{ progIcon }}"></i>
+                                    {{ progression > 0 ? '+' : '' }}{{ progression }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-slate-500">{{ suivi.dateEvaluation ? suivi.dateEvaluation|date('d/m/Y') : '—' }}</td>
+                            <td class="px-4 py-3 text-center">
+                                <div class="flex gap-1 justify-center">
+                                    <a href="{{ path('app_suivi_progression_show', {'id': suivi.id}) }}" class="w-7 h-7 rounded bg-slate-100 text-slate-600 hover:bg-slate-600 hover:text-white transition flex items-center justify-center" title="Détails">
+                                        <i class="fas fa-eye text-xs"></i>
+                                    </a>
+                                    <a href="{{ path('app_suivi_progression_edit', {'id': suivi.id}) }}" class="w-7 h-7 rounded bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white transition flex items-center justify-center" title="Modifier">
+                                        <i class="fas fa-edit text-xs"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('app_suivi_progression_email_report', {'id': suivi.id}) }}" onsubmit="return confirm('Envoyer le rapport de progression par email au parent ?');" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('email_report' ~ suivi.id) }}">
+                                        <button class="w-7 h-7 rounded bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white transition flex items-center justify-center" title="Envoyer rapport par email">
+                                            <i class="fas fa-envelope text-xs"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{{ path('app_suivi_progression_delete', {'id': suivi.id}) }}" onsubmit="return confirm('Confirmer la suppression ?');" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ suivi.id) }}">
+                                        <button class="w-7 h-7 rounded bg-rose-100 text-rose-600 hover:bg-rose-600 hover:text-white transition flex items-center justify-center" title="Supprimer">
+                                            <i class="fas fa-trash text-xs"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                                <p class="text-xl font-medium mb-2">Aucun suivi trouvé</p>
-                                <p class="text-sm mb-6">Créez votre premier rapport de suivi</p>
-                                <a href="{{ path('app_suivi_progression_new') }}" 
-                                   class="inline-flex items-center px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg">
-                                    <i class="fas fa-plus mr-2"></i> 
-                                    Créer un suivi
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
+                                <i class="fas fa-inbox text-4xl mb-3 block"></i>
+                                <p class="font-medium">Aucun suivi trouvé</p>
+                                {% if filters is not empty %}
+                                    <p class="text-sm mt-1">Essayez de modifier vos filtres de recherche</p>
+                                    <a href="{{ path('app_suivi_progression_index') }}" class="mt-2 inline-block text-sm text-emerald-600 hover:text-emerald-800 font-medium">
+                                        <i class="fas fa-times mr-1"></i>Effacer les filtres
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('app_suivi_progression_new') }}" class="mt-3 inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700 transition">
+                                        <i class="fas fa-plus mr-1"></i>Créer un suivi
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+
+    {# Pagination #}
+    {% if totalPages is defined and totalPages > 1 %}
+    <div class="flex justify-center items-center gap-2 mt-6">
+        {% if page > 1 %}
+            <a href="{{ path('app_suivi_progression_index', app.request.query.all|merge({'page': page - 1})) }}" class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        {% endif %}
+        
+        <span class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium">
+            Page {{ page }} / {{ totalPages }}
+        </span>
+        
+        {% if page < totalPages %}
+            <a href="{{ path('app_suivi_progression_index', app.request.query.all|merge({'page': page + 1})) }}" class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

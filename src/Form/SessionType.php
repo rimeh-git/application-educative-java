@@ -6,8 +6,10 @@ use App\Entity\Session;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,6 +52,33 @@ class SessionType extends AbstractType
                     'class' => 'form-input-select',
                 ],
                 'placeholder' => '🔽 Sélectionnez un type de thérapie',
+            ])
+            ->add('nomResponsable', TextType::class, [
+                'label' => '👤 Nom du responsable',
+                'required' => false,
+                'label_attr' => ['class' => 'form-label text-indigo-700 font-semibold'],
+                'attr' => [
+                    'class' => 'form-input-text',
+                    'placeholder' => 'Nom du parent ou responsable',
+                ],
+            ])
+            ->add('telephoneResponsable', TelType::class, [
+                'label' => '📞 Téléphone du responsable',
+                'required' => false,
+                'label_attr' => ['class' => 'form-label text-indigo-700 font-semibold'],
+                'attr' => [
+                    'class' => 'form-input-text',
+                    'placeholder' => 'Ex: 29 123 456',
+                ],
+            ])
+            ->add('parentEmail', EmailType::class, [
+                'label' => '✉️ Email du responsable',
+                'required' => false,
+                'label_attr' => ['class' => 'form-label text-indigo-700 font-semibold'],
+                'attr' => [
+                    'class' => 'form-input-text',
+                    'placeholder' => 'parent@example.com',
+                ],
             ])
             ->add('statut', ChoiceType::class, [
                 'label' => '📊 Statut de la séance',
@@ -106,6 +135,18 @@ class SessionType extends AbstractType
                     'placeholder' => 'Notez les comportements observés, les réactions de l\'enfant, le contexte particulier...',
                 ],
             ])
+            ->add('meetLink', TextType::class, [
+                'label' => '🎥 Lien de visioconférence',
+                'required' => false,
+                'label_attr' => ['class' => 'form-label text-indigo-700 font-semibold'],
+                'attr' => [
+                    'class' => 'form-input-text',
+                    'placeholder' => 'Généré automatiquement (Jitsi Meet)',
+                    'readonly' => true,
+                ],
+                'help' => '<div class="bg-green-50 border border-green-300 rounded-lg p-3 mt-2"><p class="text-green-900 text-sm"><i class="fas fa-check-circle"></i> Un lien Jitsi Meet sera généré automatiquement - Accès direct sans autorisation</p></div>',
+                'help_html' => true,
+            ])
         ;
     }
 
@@ -113,6 +154,7 @@ class SessionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Session::class,
+            'meet_helper_url' => '/session/meet-helper',
         ]);
     }
 }

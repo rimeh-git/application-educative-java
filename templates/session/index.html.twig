@@ -1,200 +1,385 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Sessions - TSA Thérapie{% endblock %}
+{% block title %}Sessions - TSA Therapie{% endblock %}
 
 {% block body %}
-<div class="fade-in">
-    {# Header #}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div class="fade-in space-y-6">
+
+    {# HEADER #}
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <span class="bg-indigo-100 text-indigo-600 p-3 rounded-2xl">
-                    <i class="fas fa-calendar-check text-2xl"></i>
-                </span>
-                Sessions Thérapeutiques
+            <h1 class="text-3xl font-bold text-slate-900">
+                <i class="fas fa-calendar-check text-indigo-600 mr-3"></i>Sessions Therapeutiques
             </h1>
-            <p class="text-gray-500 mt-2 ml-16">Gérez les séances et suivez la progression des enfants</p>
+            <p class="text-slate-500 mt-1">Gerez les seances et envoyez les notifications</p>
         </div>
-        <a href="{{ path('app_session_new') }}" class="group bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
-            <i class="fas fa-plus transition-transform group-hover:rotate-90"></i>
-            <span class="font-medium">Nouvelle Session</span>
-        </a>
-    </div>
-
-    {# Stats Cards #}
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 card-hover">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg">
-                <i class="fas fa-calendar text-xl"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ sessions|length }}</p>
-                <p class="text-sm text-gray-500">Total Sessions</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 card-hover">
-            <div class="bg-emerald-100 text-emerald-600 p-3 rounded-lg">
-                <i class="fas fa-check-circle text-xl"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ sessions|filter(s => s.statut == 'TERMINEE')|length }}</p>
-                <p class="text-sm text-gray-500">Terminées</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 card-hover">
-            <div class="bg-amber-100 text-amber-600 p-3 rounded-lg">
-                <i class="fas fa-clock text-xl"></i>
-            </div>
-            <div>
-                <p class="text-2xl font-bold text-gray-900">{{ sessions|filter(s => s.statut == 'EN_COURS')|length }}</p>
-                <p class="text-sm text-gray-500">En Cours</p>
-            </div>
-        </div>
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-4 card-hover">
-            <div class="bg-purple-100 text-purple-600 p-3 rounded-lg">
-                <i class="fas fa-chart-line text-xl"></i>
-            </div>
-            <div>
-                {% set totalSuivis = 0 %}
-                {% for session in sessions %}
-                    {% set totalSuivis = totalSuivis + session.suiviProgressions|length %}
-                {% endfor %}
-                <p class="text-2xl font-bold text-gray-900">{{ totalSuivis }}</p>
-                <p class="text-sm text-gray-500">Suivis Créés</p>
-            </div>
+        <div class="flex gap-3 flex-wrap">
+            <a href="{{ path('app_session_new') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 text-sm font-medium flex items-center gap-2">
+                <i class="fas fa-plus"></i>Nouvelle Session
+            </a>
+            <a href="{{ path('app_session_emploi_temps') }}" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition shadow-lg shadow-emerald-200 text-sm font-medium flex items-center gap-2">
+                <i class="fas fa-calendar-alt"></i>Emploi du temps
+            </a>
+            <a href="{{ path('app_session_index', filters|merge({'favori': filters.favori|default('') ? '' : '1'})) }}"
+               class="px-4 py-2 rounded-xl transition text-sm font-medium flex items-center gap-2 {{ filters.favori|default('') ? 'bg-amber-400 text-white shadow-lg shadow-amber-200' : 'bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100' }}">
+                {{ filters.favori|default('') ? '⭐' : '☆' }} Favoris
+            </a>
         </div>
     </div>
 
-    {# Table #}
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    {# FLASH MESSAGES #}
+    {% for type, messages in app.flashes %}{% for message in messages %}
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+            {{ type == 'success' ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' :
+               type == 'error'   ? 'bg-rose-50 border border-rose-200 text-rose-800' :
+               type == 'warning' ? 'bg-amber-50 border border-amber-200 text-amber-800' :
+               'bg-blue-50 border border-blue-200 text-blue-800' }}">
+            <i class="fas {{ type == 'success' ? 'fa-check-circle text-emerald-500' :
+                             type == 'error'   ? 'fa-times-circle text-rose-500' :
+                             type == 'warning' ? 'fa-exclamation-triangle text-amber-500' :
+                             'fa-info-circle text-blue-500' }}"></i>
+            {{ message }}
+        </div>
+    {% endfor %}{% endfor %}
+
+    {# STATS #}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition group">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition"><i class="fas fa-calendar text-xl"></i></div>
+                <div>
+                    <p class="text-2xl font-black text-slate-900">{{ totalItems }}</p>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mt-0.5">Total Sessions</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition group">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition"><i class="fas fa-check-circle text-xl"></i></div>
+                <div>
+                    <p class="text-2xl font-black text-emerald-600">{{ sessions|filter(seance => seance.statut == 'TERMINEE')|length }}</p>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mt-0.5">Terminees</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition group">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition"><i class="fas fa-clock text-xl"></i></div>
+                <div>
+                    <p class="text-2xl font-black text-amber-600">{{ sessions|filter(seance => seance.statut == 'EN_COURS')|length }}</p>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mt-0.5">En Cours</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition group">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition"><i class="fas fa-chart-line text-xl"></i></div>
+                <div>
+                    {% set totalSuivis = 0 %}
+                    {% for seance in sessions %}{% set totalSuivis = totalSuivis + seance.suiviProgressions|length %}{% endfor %}
+                    <p class="text-2xl font-black text-purple-600">{{ totalSuivis }}</p>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mt-0.5">Suivis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# RECHERCHE TYPE #}
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <form method="get" id="search-form">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-800"><i class="fas fa-search text-indigo-500 mr-2"></i>Recherche par Type</h3>
+                {% if filters.search is defined and filters.search %}
+                    <a href="{{ path('app_session_index', {'dureeMin': filters.dureeMin|default(''), 'dureeMax': filters.dureeMax|default('')}) }}"
+                       class="text-sm text-rose-500 hover:text-rose-700 font-medium flex items-center gap-1">
+                        <i class="fas fa-times-circle"></i>Effacer
+                    </a>
+                {% endif %}
+            </div>
+            <div class="flex gap-4 items-end">
+                <div class="flex-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Type de seance</label>
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" name="search" value="{{ filters.search|default('') }}"
+                               class="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300"
+                               placeholder="ABA, PECS, TEACCH, Psychomotricite...">
+                    </div>
+                </div>
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 flex items-center gap-2">
+                    <i class="fas fa-search"></i>Rechercher
+                </button>
+            </div>
+            <input type="hidden" name="dureeMin"   value="{{ filters.dureeMin|default('') }}">
+            <input type="hidden" name="dureeMax"   value="{{ filters.dureeMax|default('') }}">
+            <input type="hidden" name="sortBy"     value="{{ sortBy }}">
+            <input type="hidden" name="sortOrder"  value="{{ sortOrder }}">
+            <input type="hidden" name="limit"      value="{{ limit }}">
+        </form>
+    </div>
+
+    {# FILTRE DUREE #}
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <form method="get" id="filter-form">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-800"><i class="fas fa-hourglass-half text-indigo-500 mr-2"></i>Filtrage par Duree</h3>
+                {% if (filters.dureeMin is defined and filters.dureeMin) or (filters.dureeMax is defined and filters.dureeMax) %}
+                    <a href="{{ path('app_session_index', {'search': filters.search|default('')}) }}"
+                       class="text-sm text-rose-500 hover:text-rose-700 font-medium flex items-center gap-1">
+                        <i class="fas fa-times-circle"></i>Reinitialiser
+                    </a>
+                {% endif %}
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                        <i class="fas fa-arrow-down text-emerald-500 mr-1"></i>Duree minimale (min)
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-hourglass-start absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="number" name="dureeMin" value="{{ filters.dureeMin|default('') }}"
+                               min="0" max="300" step="5"
+                               class="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                               placeholder="Ex: 15">
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Sessions d'au moins X minutes</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                        <i class="fas fa-arrow-up text-rose-500 mr-1"></i>Duree maximale (min)
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-hourglass-end absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="number" name="dureeMax" value="{{ filters.dureeMax|default('') }}"
+                               min="0" max="300" step="5"
+                               class="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                               placeholder="Ex: 45">
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">Sessions d'au plus X minutes</p>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button type="submit" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2">
+                    <i class="fas fa-filter"></i>Appliquer le filtre
+                </button>
+            </div>
+            <input type="hidden" name="search"    value="{{ filters.search|default('') }}">
+            <input type="hidden" name="sortBy"    value="{{ sortBy }}">
+            <input type="hidden" name="sortOrder" value="{{ sortOrder }}">
+            <input type="hidden" name="limit"     value="{{ limit }}">
+        </form>
+    </div>
+
+    {# TABLE #}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+        {# En-tete info #}
+        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between flex-wrap gap-3">
+            <span class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                <i class="fas fa-table text-slate-400"></i>
+                {{ totalItems }} session{{ totalItems > 1 ? 's' : '' }}
+                {% if filters.search|default('') %} - <span class="text-indigo-600">Type : "{{ filters.search }}"</span>{% endif %}
+                {% if filters.dureeMin|default('') or filters.dureeMax|default('') %}
+                    - <span class="text-indigo-600">{{ filters.dureeMin|default('0') }}-{{ filters.dureeMax|default('infini') }} min</span>
+                {% endif %}
+            </span>
+            <div class="flex items-center gap-3 text-xs text-slate-400">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-blue-500"></span>Planifiee</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>En cours</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Terminee</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Annulee</span>
+            </div>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-200">
+                <thead class="bg-slate-50 border-b border-slate-100">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date & Heure</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Durée</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Statut</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Agitation</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Suivis</th>
-                        <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-3 py-3.5 text-center text-xs font-bold text-amber-400 uppercase tracking-wider">⭐</th>
+                        <th class="px-4 py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">ID</th>
+                        <th class="px-4 py-3.5 text-left">
+                            <a href="{{ path('app_session_index', filters|merge({'sortBy': 'dateHeure', 'sortOrder': sortBy == 'dateHeure' and sortOrder == 'ASC' ? 'DESC' : 'ASC', 'page': 1})) }}"
+                               class="text-xs font-bold text-slate-400 uppercase tracking-wider hover:text-indigo-600 flex items-center gap-1 transition">
+                                <i class="fas fa-calendar"></i>Date & Heure
+                                {% if sortBy == 'dateHeure' %}<i class="fas fa-sort-{{ sortOrder == 'ASC' ? 'up' : 'down' }} text-indigo-500"></i>{% endif %}
+                            </a>
+                        </th>
+                        <th class="px-4 py-3.5 text-left">
+                            <a href="{{ path('app_session_index', filters|merge({'sortBy': 'duree', 'sortOrder': sortBy == 'duree' and sortOrder == 'ASC' ? 'DESC' : 'ASC', 'page': 1})) }}"
+                               class="text-xs font-bold text-slate-400 uppercase tracking-wider hover:text-indigo-600 flex items-center gap-1 transition">
+                                <i class="fas fa-hourglass-half"></i>Duree
+                                {% if sortBy == 'duree' %}<i class="fas fa-sort-{{ sortOrder == 'ASC' ? 'up' : 'down' }} text-indigo-500"></i>{% endif %}
+                            </a>
+                        </th>
+                        <th class="px-4 py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Type</th>
+                        <th class="px-4 py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Statut</th>
+                        <th class="px-4 py-3.5 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Agitation</th>
+                        <th class="px-4 py-3.5 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Suivis</th>
+                        <th class="px-4 py-3.5 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
-                {% for session in sessions %}
-                    <tr class="table-row-hover transition-colors">
-                        <td class="px-6 py-4">
-                            <span class="font-mono text-sm font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">#{{ session.id }}</span>
+
+                <tbody class="divide-y divide-slate-50">
+                {% for seance in sessions %}
+                    {% set seanceDate = seance.dateHeure %}
+                    {% set seanceDateStr = seanceDate ? seanceDate|date('Y-m-d\TH:i') : '' %}
+                    {% set seanceDateFr = seanceDate ? seanceDate|date('d/m/Y') : '-' %}
+                    {% set seanceHeure = seanceDate ? seanceDate|date('H:i') : '-' %}
+
+                    <tr class="hover:bg-indigo-50/20 transition-colors group {{ seance.isFavori ? 'bg-amber-50' : '' }}">
+
+                        <td class="px-3 py-4 text-center">
+                            <button onclick="toggleFavori({{ seance.id }}, this)"
+                                    data-favori="{{ seance.isFavori ? '1' : '0' }}"
+                                    title="{{ seance.isFavori ? 'Retirer des favoris' : 'Marquer comme important' }}"
+                                    class="text-xl transition-transform hover:scale-125 focus:outline-none leading-none select-none">
+                                {{ seance.isFavori ? '⭐' : '☆' }}
+                            </button>
                         </td>
-                        <td class="px-6 py-4">
+
+                        <td class="px-4 py-4">
+                            <span class="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg">#{{ seance.id }}</span>
+                        </td>
+
+                        <td class="px-4 py-4">
                             <div class="flex flex-col">
-                                <span class="font-semibold text-gray-900">{{ session.dateHeure ? session.dateHeure|date('d/m/Y') : '-' }}</span>
-                                <span class="text-sm text-gray-500">{{ session.dateHeure ? session.dateHeure|date('H:i') : '' }}</span>
+                                <span class="font-semibold text-slate-900 text-sm">{{ seanceDateFr }}</span>
+                                <span class="text-xs text-slate-400 mt-0.5"><i class="fas fa-clock mr-1"></i>{{ seanceHeure }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
-                                <i class="fas fa-hourglass-half mr-2 text-indigo-500"></i>
-                                {{ session.duree }} min
+
+                        <td class="px-4 py-4">
+                            {% set d = seance.duree %}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold
+                                {{ d < 15 ? 'bg-rose-100 text-rose-700 border border-rose-200' :
+                                   d < 30 ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                                   d < 60 ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' :
+                                            'bg-blue-100 text-blue-700 border border-blue-200' }}">
+                                <i class="fas {{ d < 15 ? 'fa-bolt' : d < 30 ? 'fa-hourglass-half' : d < 60 ? 'fa-hourglass' : 'fa-hourglass-end' }}"></i>
+                                {{ d }} min
                             </span>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="font-medium text-gray-900">{{ session.type }}</span>
+
+                        <td class="px-4 py-4">
+                            <span class="text-sm font-semibold text-slate-800">{{ seance.type ?? '-' }}</span>
                         </td>
-                        <td class="px-6 py-4">
-                            {% set badgeClass = {
-                                'PLANIFIEE': 'bg-blue-100 text-blue-700 border-blue-200',
-                                'EN_COURS': 'bg-amber-100 text-amber-700 border-amber-200',
-                                'TERMINEE': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                                'ANNULEE': 'bg-rose-100 text-rose-700 border-rose-200'
-                            }[session.statut] %}
-                            <span class="badge-modern border {{ badgeClass }}">
-                                {% if session.statut == 'PLANIFIEE' %}📅
-                                {% elseif session.statut == 'EN_COURS' %}▶️
-                                {% elseif session.statut == 'TERMINEE' %}✅
-                                {% else %}❌{% endif %}
-                                {{ session.statut }}
+
+                        <td class="px-4 py-4">
+                            {% set statusMap = {
+                                'PLANIFIEE': {cls: 'bg-blue-100 text-blue-700 border-blue-200',     dot: 'bg-blue-500',    emoji: ''},
+                                'EN_COURS':  {cls: 'bg-amber-100 text-amber-700 border-amber-200', dot: 'bg-amber-500 animate-pulse', emoji: ''},
+                                'TERMINEE':  {cls: 'bg-emerald-100 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500', emoji: ''},
+                                'ANNULEE':   {cls: 'bg-rose-100 text-rose-700 border-rose-200',    dot: 'bg-rose-500',    emoji: ''}
+                            } %}
+                            {% set sm = statusMap[seance.statut]|default({cls: 'bg-slate-100 text-slate-600 border-slate-200', dot: 'bg-slate-400', emoji: '?'}) %}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border {{ sm.cls }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ sm.dot }}"></span>
+                                {{ seance.statut|replace({'_': ' '}) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
-                            {% set agitationClass = {
-                                'CALME': 'bg-emerald-100 text-emerald-700',
-                                'AGITE': 'bg-orange-100 text-orange-700',
-                                'CRISE': 'bg-rose-100 text-rose-700'
-                            }[session.niveauAgitation] %}
-                            <span class="badge-modern {{ agitationClass }}">
-                                {% if session.niveauAgitation == 'CALME' %}😊
-                                {% elseif session.niveauAgitation == 'AGITE' %}😰
-                                {% else %}😭{% endif %}
-                                {{ session.niveauAgitation }}
+
+                        <td class="px-4 py-4">
+                            {% set agMap = {
+                                'CALME': {cls: 'bg-emerald-100 text-emerald-700', emoji: ''},
+                                'AGITE': {cls: 'bg-orange-100 text-orange-700',   emoji: ''},
+                                'CRISE': {cls: 'bg-rose-100 text-rose-700',       emoji: ''}
+                            } %}
+                            {% set ag = agMap[seance.niveauAgitation|default('')]|default({cls: 'bg-slate-100 text-slate-500', emoji: '-'}) %}
+                            {% if seance.niveauAgitation|default('') %}
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ ag.cls }}">
+                                {{ ag.emoji }} {{ seance.niveauAgitation }}
                             </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            {% if session.suiviProgressions|length > 0 %}
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-xs font-medium">
-                                    {{ session.suiviProgressions|length }} suivi{{ session.suiviProgressions|length > 1 ? 's' : '' }}
-                                </span>
                             {% else %}
-                                <span class="text-gray-400 text-sm">-</span>
+                            <span class="text-slate-300 text-sm">-</span>
                             {% endif %}
                         </td>
-                        
-                        {# ============ COLONNE ACTIONS AVEC 3 BOUTONS ============ #}
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2">
-                                
-                                {# 1. BOUTON VOIR (Bleu) #}
-                                <a href="{{ path('app_session_show', {'id': session.id}) }}" 
-                                   class="group relative w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-500 hover:text-white transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-110" 
-                                   title="Voir les détails">
-                                    <i class="fas fa-eye text-sm"></i>
-                                    <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                        Voir
-                                    </span>
+
+                        <td class="px-4 py-4 text-center">
+                            {% set nb = seance.suiviProgressions|length %}
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold
+                                {{ nb > 0 ? 'bg-purple-100 text-purple-700' : 'bg-slate-100 text-slate-400' }}">
+                                {{ nb }}
+                            </span>
+                        </td>
+
+                        {# ========================================== #}
+                        {# COLONNE ACTIONS - UN SEUL BOUTON TWILIO    #}
+                        {# ========================================== #}
+                        <td class="px-4 py-4">
+                            <div class="flex items-center justify-center gap-1.5">
+
+                                <a href="{{ path('app_session_show', {'id': seance.id}) }}"
+                                   class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-600 hover:text-white transition-all flex items-center justify-center" title="Voir">
+                                    <i class="fas fa-eye text-xs"></i>
                                 </a>
 
-                                {# 2. BOUTON MODIFIER (Amber/Orange) #}
-                                <a href="{{ path('app_session_edit', {'id': session.id}) }}" 
-                                   class="group relative w-10 h-10 rounded-xl bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-110" 
-                                   title="Modifier la session">
-                                    <i class="fas fa-edit text-sm"></i>
-                                    <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                        Modifier
-                                    </span>
+                                <a href="{{ path('app_session_edit', {'id': seance.id}) }}"
+                                   class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 hover:bg-amber-500 hover:text-white transition-all flex items-center justify-center" title="Modifier">
+                                    <i class="fas fa-edit text-xs"></i>
                                 </a>
 
-                                {# 3. BOUTON SUPPRIMER (Rouge) #}
-                                <form method="post" action="{{ path('app_session_delete', {'id': session.id}) }}" 
-                                      class="inline" 
-                                      onsubmit="return confirm('🗑️ Êtes-vous sûr de vouloir supprimer cette session ?\n\nCette action supprimera aussi tous les suivis associés.');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ session.id) }}">
-                                    <button type="submit" 
-                                            class="group relative w-10 h-10 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md hover:scale-110" 
-                                            title="Supprimer la session">
-                                        <i class="fas fa-trash-alt text-sm"></i>
-                                        <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                            Supprimer
-                                        </span>
+                                <form method="post" action="{{ path('app_session_email_rappel', {'id': seance.id}) }}" class="inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('email_rappel' ~ seance.id) }}">
+                                    <button type="submit"
+                                        class="w-8 h-8 rounded-lg bg-blue-100 text-blue-500 hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center" title="Envoyer details par email">
+                                        <i class="fas fa-envelope text-xs"></i>
+                                    </button>
+                                </form>
+
+                                {# ========================================== #}
+                                {# UN SEUL BOUTON TWILIO - COULEUR SELON STATUT #}
+                                {# ========================================== #}
+                                {% set smsColors = {
+                                    'PLANIFIEE': 'bg-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white',
+                                    'EN_COURS':  'bg-amber-100 text-amber-600 hover:bg-amber-600 hover:text-white',
+                                    'TERMINEE':  'bg-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white',
+                                    'ANNULEE':   'bg-rose-100 text-rose-600 hover:bg-rose-600 hover:text-white'
+                                } %}
+                                {% set smsColor = smsColors[seance.statut]|default('bg-slate-100 text-slate-500 hover:bg-slate-600 hover:text-white') %}
+                                {% set smsTitles = {
+                                    'PLANIFIEE': 'Notifier patient - Session planifiee',
+                                    'EN_COURS':  'Notifier patient - Session en cours',
+                                    'TERMINEE':  'Notifier patient - Session terminee',
+                                    'ANNULEE':   'Notifier patient - Session annulee'
+                                } %}
+                                {% set smsTitle = smsTitles[seance.statut]|default('Notifier patient par SMS') %}
+
+                                <form method="post" action="{{ path('app_session_notify_sms', {'id': seance.id}) }}" class="inline"
+                                      onsubmit="return confirm('Envoyer une notification SMS au patient ? Statut actuel : {{ seance.statut|replace({'_': ' '}) }}')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('notify_sms' ~ seance.id) }}">
+                                    <button type="submit"
+                                        class="w-8 h-8 rounded-lg {{ smsColor }} transition-all flex items-center justify-center shadow-sm" title="{{ smsTitle }}">
+                                        <i class="fas fa-sms text-xs"></i>
+                                    </button>
+                                </form>
+
+
+
+                                <form method="post" action="{{ path('app_session_delete', {'id': seance.id}) }}" class="inline"
+                                      onsubmit="return confirm('Supprimer definitivement cette session ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ seance.id) }}">
+                                    <button type="submit"
+                                        class="w-8 h-8 rounded-lg bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center" title="Supprimer">
+                                        <i class="fas fa-trash-alt text-xs"></i>
                                     </button>
                                 </form>
 
                             </div>
                         </td>
-                        {# ============ FIN COLONNE ACTIONS ============ #}
-                        
+
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="8" class="px-6 py-12 text-center">
-                            <div class="flex flex-col items-center text-gray-400">
-                                <div class="bg-gray-100 p-4 rounded-full mb-4">
-                                    <i class="fas fa-inbox text-4xl"></i>
+                        <td colspan="9" class="px-6 py-20 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center">
+                                    <i class="fas fa-calendar-times text-4xl text-slate-300"></i>
                                 </div>
-                                <p class="text-lg font-medium mb-2">Aucune session trouvée</p>
-                                <p class="text-sm mb-4">Commencez par créer votre première session</p>
-                                <a href="{{ path('app_session_new') }}" class="text-indigo-600 hover:text-indigo-700 font-medium">
-                                    <i class="fas fa-plus mr-1"></i> Créer une session
+                                <div>
+                                    <p class="text-lg font-semibold text-slate-500">Aucune session trouvee</p>
+                                    <p class="text-sm text-slate-400 mt-1">Essayez de modifier vos filtres</p>
+                                </div>
+                                <a href="{{ path('app_session_index') }}" class="text-sm text-indigo-600 font-medium hover:underline flex items-center gap-1">
+                                    <i class="fas fa-undo"></i>Reinitialiser les filtres
                                 </a>
                             </div>
                         </td>
@@ -203,6 +388,80 @@
                 </tbody>
             </table>
         </div>
+
+        {# PAGINATION #}
+        <div class="border-t border-slate-100 bg-slate-50 px-6 py-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <p class="text-sm text-slate-500">
+                    {% if totalItems > 0 %}
+                        Affichage <span class="font-semibold text-slate-700">{{ (page - 1) * limit + 1 }}-{{ min(page * limit, totalItems) }}</span>
+                        sur <span class="font-semibold text-slate-700">{{ totalItems }}</span> sessions
+                        - Page <span class="font-semibold text-slate-700">{{ page }}</span>/{{ totalPages }}
+                    {% else %}
+                        Aucune session
+                    {% endif %}
+                </p>
+
+                <div class="flex items-center gap-1.5">
+                    {% if page > 1 %}
+                        <a href="{{ path('app_session_index', filters|merge({'page': page - 1})) }}"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition text-sm">
+                            <i class="fas fa-chevron-left text-xs"></i></a>
+                    {% else %}
+                        <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"><i class="fas fa-chevron-left text-xs"></i></span>
+                    {% endif %}
+
+                    {% if page > 3 %}
+                        <a href="{{ path('app_session_index', filters|merge({'page': 1})) }}"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition text-sm font-medium">1</a>
+                        {% if page > 4 %}<span class="text-slate-400 text-sm px-1">...</span>{% endif %}
+                    {% endif %}
+
+                    {% for p in max(1, page - 2)..min(totalPages, page + 2) %}
+                        {% if p == page %}
+                            <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-indigo-600 text-white font-bold shadow-sm text-sm">{{ p }}</span>
+                        {% else %}
+                            <a href="{{ path('app_session_index', filters|merge({'page': p})) }}"
+                               class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition text-sm font-medium">{{ p }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page < totalPages - 2 %}
+                        {% if page < totalPages - 3 %}<span class="text-slate-400 text-sm px-1">...</span>{% endif %}
+                        <a href="{{ path('app_session_index', filters|merge({'page': totalPages})) }}"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition text-sm font-medium">{{ totalPages }}</a>
+                    {% endif %}
+
+                    {% if page < totalPages %}
+                        <a href="{{ path('app_session_index', filters|merge({'page': page + 1})) }}"
+                           class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition text-sm">
+                            <i class="fas fa-chevron-right text-xs"></i></a>
+                    {% else %}
+                        <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 text-slate-300 cursor-not-allowed"><i class="fas fa-chevron-right text-xs"></i></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
+
+<script>
+function toggleFavori(id, btn) {
+    fetch('/session/' + id + '/favori', { method: 'POST' })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            btn.textContent = data.favori ? '⭐' : '☆';
+            btn.title       = data.favori ? 'Retirer des favoris' : 'Marquer comme important';
+            btn.dataset.favori = data.favori ? '1' : '0';
+            var row = btn.closest('tr');
+            if (data.favori) {
+                row.classList.add('bg-amber-50');
+            } else {
+                row.classList.remove('bg-amber-50');
+            }
+        });
+}
+</script>
+
 {% endblock %}

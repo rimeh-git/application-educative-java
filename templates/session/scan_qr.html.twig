@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}📱 Scanner QR Code{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-lg p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                📱 Scanner QR Code
+            </h1>
+            <p class="text-gray-600">
+                Scannez le QR code pour confirmer votre présence
+            </p>
+        </div>
+
+        {# Zone de scan #}
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-8 mb-6">
+            <div id="reader" class="mx-auto max-w-md"></div>
+        </div>
+
+        {# Instructions #}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                <i class="fas fa-info-circle"></i>
+                Instructions
+            </h3>
+            <ul class="space-y-2 text-sm text-blue-800">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Autorisez l'accès à la caméra de votre appareil</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Placez le QR code dans le cadre de la caméra</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Le scan se fera automatiquement</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-blue-600 mt-1"></i>
+                    <span>Vous gagnerez +10 points de motivation!</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+function onScanSuccess(decodedText, decodedResult) {
+    // Rediriger vers l'URL scannée
+    window.location.href = decodedText;
+}
+
+function onScanError(errorMessage) {
+    // Ignorer les erreurs de scan
+}
+
+// Initialiser le scanner
+const html5QrCode = new Html5Qrcode("reader");
+const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+html5QrCode.start(
+    { facingMode: "environment" },
+    config,
+    onScanSuccess,
+    onScanError
+).catch(err => {
+    console.error("Erreur de démarrage du scanner:", err);
+    document.getElementById('reader').innerHTML = `
+        <div class="text-center p-8">
+            <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+            <p class="text-red-600 font-semibold mb-2">Impossible d'accéder à la caméra</p>
+            <p class="text-gray-600 text-sm">Veuillez autoriser l'accès à la caméra dans les paramètres de votre navigateur</p>
+        </div>
+    `;
+});
+</script>
+{% endblock %}

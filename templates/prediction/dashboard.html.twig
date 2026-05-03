@@ -1,0 +1,324 @@
+{% extends 'base.html.twig' %}
+{% block title %}Prediction Abandon — TSA Therapie{% endblock %}
+
+{% block body %}
+<div class="fade-in space-y-6">
+
+    {# Header #}
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-1">Intelligence Artificielle</p>
+            <h1 class="text-2xl font-black text-slate-800">Prediction d'Abandon</h1>
+            <p class="text-sm text-slate-400 mt-1">Analyse automatique des sessions et progressions</p>
+        </div>
+        <a href="{{ path('app_session_index') }}"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
+            <i class="fas fa-calendar-alt"></i> Gerer les sessions
+        </a>
+    </div>
+
+    {# KPIs #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-users text-slate-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-3xl font-black text-slate-700">{{ total }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Total sessions</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-3xl font-black text-emerald-600">{{ stables }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Stables (0)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-red-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-3xl font-black text-red-600">{{ risques }}</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">A risque (1)</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-amber-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-percentage text-amber-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-3xl font-black text-amber-600">{{ tauxRisque }}%</p>
+                    <p class="text-xs text-slate-400 font-semibold uppercase">Taux de risque</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Alerte globale si risques detectes #}
+    {% set alertes = resultats|filter(r => r.prediction.prediction == 1) %}
+    {% if alertes|length > 0 %}
+    <div class="bg-red-50 border-2 border-red-300 rounded-2xl overflow-hidden">
+        <div class="bg-red-600 px-5 py-3 flex items-center gap-2 text-white">
+            <i class="fas fa-exclamation-triangle animate-pulse"></i>
+            <span class="font-bold">ALERTE — {{ alertes|length }} session(s) en RISQUE D'ABANDON</span>
+        </div>
+        <div class="p-4 space-y-3">
+            {% for r in alertes %}
+            <div class="bg-white border-2 border-red-200 rounded-xl px-4 py-3 flex items-center justify-between shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-red-700 font-black text-sm">
+                        #{{ r.session.id }}
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">Session #{{ r.session.id }} — {{ r.session.type }}</p>
+                        <p class="text-xs text-slate-500">
+                            {{ r.session.statut }} • Agitation : {{ r.session.niveauAgitation }} • {{ r.session.duree }} min
+                        </p>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            {% for f in r.prediction.facteurs %}
+                            <span class="text-xs px-2 py-0.5 rounded-full font-semibold
+                                {{ f.niveau == 'critique' ? 'bg-red-100 text-red-700' :
+                                   (f.niveau == 'moyen'   ? 'bg-amber-100 text-amber-700' :
+                                                            'bg-slate-100 text-slate-600') }}">
+                                {{ f.label }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <div class="text-center">
+                        <div class="text-2xl font-black text-red-600">{{ r.prediction.probabilite }}%</div>
+                        <div class="text-xs text-slate-400">probabilite</div>
+                    </div>
+                    <a href="{{ path('app_session_show', {id: r.session.id}) }}"
+                       class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition">
+                        Voir
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl px-5 py-4 flex items-center gap-3">
+        <i class="fas fa-check-circle text-emerald-500 text-2xl"></i>
+        <div>
+            <p class="font-bold text-emerald-700">Aucun risque d'abandon detecte</p>
+            <p class="text-sm text-emerald-600">Tous les patients suivent leur traitement normalement.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Tableau complet #}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="font-bold text-slate-800 flex items-center gap-2">
+                <i class="fas fa-brain text-violet-500"></i> Analyse par session
+            </h2>
+            <span class="text-xs text-slate-400">{{ total }} session(s) analysee(s)</span>
+        </div>
+
+        {% if resultats is empty %}
+        <div class="text-center py-16 text-slate-400">
+            <i class="fas fa-database text-4xl opacity-30 block mb-3"></i>
+            <p class="font-semibold">Aucune session a analyser</p>
+            <a href="{{ path('app_session_new') }}"
+               class="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
+                <i class="fas fa-plus"></i> Creer une session
+            </a>
+        </div>
+        {% else %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Session</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Type / Statut</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Agitation</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Progression</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Prediction ML</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase">Facteurs</th>
+                        <th class="px-4 py-3 text-center text-xs font-bold text-slate-400 uppercase">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                {% for r in resultats %}
+                {% set isRisque = r.prediction.prediction == 1 %}
+                {% set prog = r.prediction.features.progMoyenne %}
+                <tr class="hover:bg-slate-50/50 transition {{ isRisque ? 'bg-red-50/40' : '' }}">
+
+                    <td class="px-4 py-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black
+                                {{ isRisque ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700' }}">
+                                #{{ r.session.id }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800">{{ r.session.dateHeure|date('d/m/Y') }}</p>
+                                <p class="text-xs text-slate-400">{{ r.session.duree }} min</p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="px-4 py-3">
+                        <p class="text-sm font-semibold text-slate-700">{{ r.session.type }}</p>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-bold
+                            {{ r.session.statut == 'TERMINEE'  ? 'bg-emerald-100 text-emerald-700' :
+                               (r.session.statut == 'ANNULEE'  ? 'bg-red-100 text-red-700' :
+                               (r.session.statut == 'EN_COURS' ? 'bg-blue-100 text-blue-700' :
+                                                                  'bg-slate-100 text-slate-600')) }}">
+                            {{ r.session.statut }}
+                        </span>
+                    </td>
+
+                    <td class="px-4 py-3">
+                        <span class="text-xs px-2 py-1 rounded-full font-bold
+                            {{ r.session.niveauAgitation == 'CALME' ? 'bg-emerald-100 text-emerald-700' :
+                               (r.session.niveauAgitation == 'AGITE' ? 'bg-amber-100 text-amber-700' :
+                                                                        'bg-red-100 text-red-700') }}">
+                            {{ r.session.niveauAgitation }}
+                        </span>
+                    </td>
+
+                    <td class="px-4 py-3">
+                        {% if prog is not null %}
+                        <span class="text-lg font-black
+                            {{ prog > 0 ? 'text-emerald-600' : (prog < 0 ? 'text-red-600' : 'text-slate-400') }}">
+                            {{ prog > 0 ? '+' : '' }}{{ prog|round(1) }}
+                        </span>
+                        <span class="text-xs text-slate-400"> pts</span>
+                        {% else %}
+                        <span class="text-xs text-slate-300 italic">Aucun suivi</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-4 py-3">
+                        {% if isRisque %}
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                            <span class="text-xs font-black text-red-600">RISQUE_ABANDON</span>
+                        </div>
+                        {% else %}
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            <span class="text-xs font-black text-emerald-600">NORMAL</span>
+                        </div>
+                        {% endif %}
+                        <div class="mt-1 flex items-center gap-1">
+                            <div class="w-20 h-1.5 rounded-full overflow-hidden {{ isRisque ? 'bg-red-100' : 'bg-emerald-100' }}">
+                                <div class="h-full rounded-full {{ isRisque ? 'bg-red-500' : 'bg-emerald-400' }}"
+                                     style="width:{{ r.prediction.probabilite }}%"></div>
+                            </div>
+                            <span class="text-xs font-bold {{ isRisque ? 'text-red-600' : 'text-emerald-600' }}">
+                                {{ r.prediction.probabilite }}%
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="px-4 py-3 max-w-xs">
+                        {% if r.prediction.facteurs is empty %}
+                        <span class="text-xs text-slate-300 italic">Aucun facteur</span>
+                        {% else %}
+                        <div class="flex flex-wrap gap-1">
+                            {% for f in r.prediction.facteurs|slice(0, 2) %}
+                            <span class="text-xs px-1.5 py-0.5 rounded font-medium
+                                {{ f.niveau == 'critique' ? 'bg-red-100 text-red-700' :
+                                   (f.niveau == 'moyen'   ? 'bg-amber-100 text-amber-700' :
+                                                            'bg-slate-100 text-slate-500') }}">
+                                {{ f.label }}
+                            </span>
+                            {% endfor %}
+                            {% if r.prediction.facteurs|length > 2 %}
+                            <span class="text-xs text-slate-400">+{{ r.prediction.facteurs|length - 2 }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </td>
+
+                    <td class="px-4 py-3 text-center">
+                        <a href="{{ path('app_session_show', {id: r.session.id}) }}"
+                           class="px-3 py-1.5 text-xs font-bold rounded-lg transition
+                               {{ isRisque ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                            Voir
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Graphique + Explication #}
+    {% if total > 0 %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-pie text-violet-500"></i> Repartition des predictions
+            </h3>
+            <canvas id="pieChart" height="220"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-indigo-500"></i> Comment fonctionne la prediction ?
+            </h3>
+            <div class="space-y-3 text-sm text-slate-600">
+                <div class="flex items-start gap-2 p-3 bg-slate-50 rounded-xl">
+                    <span class="font-bold text-indigo-600">1.</span>
+                    <div><strong>Collecte</strong> — Recuperation des donnees de chaque session (statut, agitation, duree) et de ses suivis de progression.</div>
+                </div>
+                <div class="flex items-start gap-2 p-3 bg-slate-50 rounded-xl">
+                    <span class="font-bold text-indigo-600">2.</span>
+                    <div><strong>Analyse</strong> — Score de risque (0 a 1) calcule en ponderant 5 facteurs : statut, agitation, duree, progression, completude.</div>
+                </div>
+                <div class="flex items-start gap-2 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                    <span class="font-bold text-emerald-600">0</span>
+                    <div><strong>NORMAL</strong> — Score inferieur a 50% : patient stable, traitement en bonne voie.</div>
+                </div>
+                <div class="flex items-start gap-2 p-3 bg-red-50 rounded-xl border border-red-100">
+                    <span class="font-bold text-red-600">1</span>
+                    <div><strong>RISQUE_ABANDON</strong> — Score superieur ou egal a 50% : alerte declenchee, action recommandee.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['NORMAL (0)', 'RISQUE_ABANDON (1)'],
+        datasets: [{
+            data: [{{ stables }}, {{ risques }}],
+            backgroundColor: ['#10b981', '#ef4444'],
+            borderWidth: 0,
+            hoverOffset: 8,
+        }]
+    },
+    options: {
+        cutout: '65%',
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { weight: '700' } } }
+        }
+    }
+});
+</script>
+{% endblock %}

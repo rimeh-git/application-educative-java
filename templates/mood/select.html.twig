@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment te sens-tu aujourd'hui ?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        .mood-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .mood-btn {
+            background: white;
+            border: 4px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        .mood-btn:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .mood-btn.happy:hover {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .mood-btn.neutral:hover {
+            border-color: #FF9800;
+            background: #fff8f0;
+        }
+        .mood-btn.sad:hover {
+            border-color: #2196F3;
+            background: #f0f7ff;
+        }
+        .emoji {
+            font-size: 5em;
+            margin-bottom: 10px;
+        }
+        .mood-label {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bonjour {{ patient.prenom }} ! 👋</h1>
+        <p class="subtitle">Comment te sens-tu aujourd'hui ?</p>
+        
+        <form action="{{ path('mood_save') }}" method="POST">
+            <input type="hidden" name="patient_id" value="{{ patient.id }}">
+            <div class="mood-buttons">
+                <button type="submit" name="mood" value="happy" class="mood-btn happy">
+                    <div class="emoji">😄</div>
+                    <div class="mood-label">Heureux</div>
+                </button>
+                
+                <button type="submit" name="mood" value="neutral" class="mood-btn neutral">
+                    <div class="emoji">😐</div>
+                    <div class="mood-label">Neutre</div>
+                </button>
+                
+                <button type="submit" name="mood" value="sad" class="mood-btn sad">
+                    <div class="emoji">😢</div>
+                    <div class="mood-label">Triste</div>
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
